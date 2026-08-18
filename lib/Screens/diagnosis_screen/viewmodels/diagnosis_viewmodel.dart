@@ -1,12 +1,17 @@
+// Crop Guardian - diagnosis viewmodel
+// Author: Tejas S <tejus.sgowda07@gmail.com>
+// Team Maverick - Cambridge Institute of Engineering
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import '../../../core/ml/offline_classifier.dart';
 import '../models/diagnosis_model.dart';
-import '../services/diagnosis_service.dart';
+import '../services/hybrid_diagnosis_service.dart';
 import '../services/tts_service.dart';
 
 class DiagnosisViewModel extends ChangeNotifier {
-  final DiagnosisService _diagnosisService = DiagnosisService();
+  final HybridDiagnosisService _service = HybridDiagnosisService();
   final TtsService _ttsService = TtsService();
   late stt.SpeechToText _speech;
 
@@ -14,33 +19,60 @@ class DiagnosisViewModel extends ChangeNotifier {
   String _description = '';
   String _selectedLanguage = 'English';
   DiagnosisModel? _diagnosis;
-  String? _imageUrl;
+  OfflinePrediction? _offlineResult;
+  DiagnosisSource? _source;
+  int _lastScanId = -1;
   bool _isLoading = false;
+  bool _isEscalating = false;
   bool _isSpeaking = false;
   bool _isListening = false;
+  bool _feedbackGiven = false;
   String _errorMessage = '';
 
-  // Getters
   File? get selectedImage => _selectedImage;
   String get description => _description;
   String get selectedLanguage => _selectedLanguage;
   DiagnosisModel? get diagnosis => _diagnosis;
-  String? get imageUrl => _imageUrl;
+  OfflinePrediction? get offlineResult => _offlineResult;
+  DiagnosisSource? get source => _source;
   bool get isLoading => _isLoading;
+  bool get isEscalating => _isEscalating;
   bool get isSpeaking => _isSpeaking;
   bool get isListening => _isListening;
+  bool get feedbackGiven => _feedbackGiven;
   String get errorMessage => _errorMessage;
+
+  bool get hasResult => _diagnosis != null || _offlineResult != null;
+  bool get answeredOffline => _source == DiagnosisSource.onDevice;
+  bool get didEscalate => _source == DiagnosisSource.cloudEscalated;
+
+  String get resultTitle {
+    if (_diagnosis != null) return _diagnosis!.detectedIssue;
+    if (_offlineResult != null) return _offlineResult!.condition;
+    return '';
+  }
+
+  String get resultCrop {
+    if (_diagnosis != null) return _diagnosis!.cropType;
+    if (_offlineResult != null) return _offlineResult!.cropType;
+    return '';
+  }
+
+  double get resultConfidence {
+    if (_diagnosis != null) return _diagnosis!.confidenceScore;
+    if (_offlineResult != null) return _offlineResult!.confidence;
+    return 0;
+  }
 
   DiagnosisViewModel() {
     _initializeServices();
-
   }
 
   Future<void> _initializeServices() async {
     await _ttsService.initialize();
     _speech = stt.SpeechToText();
     await _speech.initialize();
-
+    OfflineClassifier.instance.load();
     _ttsService.setCompletionHandler(() {
       _isSpeaking = false;
       notifyListeners();
@@ -49,8 +81,7 @@ class DiagnosisViewModel extends ChangeNotifier {
 
   void setImage(File image) {
     _selectedImage = image;
-    _diagnosis = null;
-    _errorMessage = '';
+    _resetResult();
     notifyListeners();
   }
 
@@ -65,7 +96,16 @@ class DiagnosisViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> performDiagnosis() async {
+  void _resetResult() {
+    _diagnosis = null;
+    _offlineResult = null;
+    _source = null;
+    _lastScanId = -1;
+    _feedbackGiven = false;
+    _errorMessage = '';
+  }
+
+  Future<void> performDiagnosis({bool forceCloud = false}) async {
     if (_selectedImage == null) {
       _errorMessage = 'Please select an image first';
       notifyListeners();
@@ -73,92 +113,77 @@ class DiagnosisViewModel extends ChangeNotifier {
     }
 
     _isLoading = true;
-    _errorMessage = '';
-    _diagnosis = null;
+    _isEscalating = false;
+    _resetResult();
     notifyListeners();
 
-    try {
-      final result = await _diagnosisService.performDiagnosis(
-        imageFile: _selectedImage!,
-        description: _description.isEmpty ? null : _description,
-        language: _selectedLanguage,
-      );
+    final result = await _service.diagnose(
+      imageFile: _selectedImage!,
+      description: _description,
+      forceCloud: forceCloud,
+    );
 
-      if (result['success']) {
-        _diagnosis = result['diagnosis'];
-        _imageUrl = result['imageUrl'];
-      } else {
-        _errorMessage = result['error'] ?? 'Diagnosis failed';
-      }
-    } catch (e) {
-      _errorMessage = 'Error: $e';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    _source = result.source;
+    _offlineResult = result.offline;
+    _diagnosis = result.cloud;
+    _lastScanId = result.localScanId;
+    _errorMessage = result.error ?? '';
+    _isLoading = false;
+    _isEscalating = false;
+    notifyListeners();
+  }
+
+  Future<void> askExpertModel() async {
+    _isEscalating = true;
+    notifyListeners();
+    await performDiagnosis(forceCloud: true);
+  }
+
+  Future<void> submitFeedback({String? correctedLabel}) async {
+    if (_lastScanId < 0) return;
+    await _service.recordFeedback(_lastScanId, correctedLabel: correctedLabel);
+    _feedbackGiven = true;
+    notifyListeners();
+  }
+
+  Future<void> speak() async {
+    if (!hasResult) return;
+    _isSpeaking = true;
+    notifyListeners();
+    final text = _diagnosis != null
+        ? '${_diagnosis!.cropType}. ${_diagnosis!.detectedIssue}. ${_diagnosis!.description}'
+        : '${_offlineResult!.cropType}. ${_offlineResult!.condition}.';
+    await _ttsService.speak(text);
   }
 
   Future<void> toggleSpeech() async {
     if (_isSpeaking) {
-      await _ttsService.stop();
-      _isSpeaking = false;
-    } else if (_diagnosis != null) {
-      final textToSpeak = _buildSpeechText();
-      await _ttsService.speak(textToSpeak);
-      _isSpeaking = true;
+      await stopSpeaking();
+    } else {
+      await speak();
     }
+  }
+
+  Future<void> stopSpeaking() async {
+    await _ttsService.stop();
+    _isSpeaking = false;
     notifyListeners();
   }
 
-  String _buildSpeechText() {
-    if (_diagnosis == null) return '';
-
-    return '''
-Crop Type: ${_diagnosis!.cropType}.
-Detected Issue: ${_diagnosis!.detectedIssue}.
-Severity: ${_diagnosis!.severity}.
-Description: ${_diagnosis!.description}.
-Solutions: ${_diagnosis!.solutions.join('. ')}.
-Preventive Measures: ${_diagnosis!.preventiveMeasures.join('. ')}.
-Pesticide: ${_diagnosis!.recommendedPesticides.join('. ')}.
-confidence_score: ${_diagnosis!.confidenceScore}
-''';
-  }
-
-  Future<void> toggleVoiceInput() async {
+  Future<void> toggleListening() async {
     if (_isListening) {
       await _speech.stop();
       _isListening = false;
     } else {
-      if (await _speech.initialize()) {
+      final available = await _speech.initialize();
+      if (available) {
         _isListening = true;
-        notifyListeners();
-
-        await _speech.listen(
-          onResult: (result) {
-            _description = result.recognizedWords;
-            notifyListeners();
-          },
-          localeId: _getLocaleId(),
-        );
+        _speech.listen(onResult: (r) {
+          _description = r.recognizedWords;
+          notifyListeners();
+        });
       }
     }
-    notifyListeners();
-  }
-
-  String _getLocaleId() {
-    switch (_selectedLanguage) {
-      case 'Hindi':
-        return 'hi_IN';
-      case 'Kannada':
-        return 'kn_IN';
-      default:
-        return 'en_US';
-    }
-  }
-
-  void clearError() {
-    _errorMessage = '';
     notifyListeners();
   }
 
