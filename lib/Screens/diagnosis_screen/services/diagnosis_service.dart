@@ -1,7 +1,7 @@
 import 'dart:io';
 import '../models/diagnosis_model.dart';
 import 'cloudinary_service.dart';
-import 'openrouter_service.dart';
+import 'gemini_service.dart';
 import 'translator_service.dart';
 // 1. ADD THESE IMPORTS
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class DiagnosisService {
   final CloudinaryService _cloudinaryService = CloudinaryService();
-  final OpenRouterService _openRouterService = OpenRouterService();
+  final GeminiService _geminiService = GeminiService();
   final TranslatorService _translatorService = TranslatorService();
   // 2. INITIALIZE FIRESTORE
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -28,10 +28,10 @@ class DiagnosisService {
       print('Image uploaded: $imageUrl');
 
       print('Analyzing image...');
-      final analysisText = await _openRouterService.analyzeImage(imageUrl, description);
+      final analysisText = await _geminiService.analyzeImage(imageFile, description);
 
       print('Parsing response...');
-      final diagnosis = _openRouterService.parseDiagnosisResponse(analysisText);
+      final diagnosis = _geminiService.parseDiagnosisResponse(analysisText);
 
       DiagnosisModel finalDiagnosis = diagnosis;
 

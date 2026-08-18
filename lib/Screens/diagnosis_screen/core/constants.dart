@@ -1,10 +1,12 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConstants {
   // Cloudinary Configuration
-  static const String cloudinaryCloudName = 'dbsesnq44';
-  static const String cloudinaryUploadPreset = 'crop_images';
+  static String get cloudinaryCloudName => dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? '';
+  static String get cloudinaryUploadPreset => dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? '';
 
   // OpenRouter API Configuration (FREE - supports vision models)
-  static const String openRouterApiKey = '';
+  static String get geminiApiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
   static const String openRouterApiUrl = 'https://openrouter.ai/api/v1/chat/completions';
   static const String visionModel = 'google/gemini-flash-1.5-8b';
 
