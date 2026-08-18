@@ -100,3 +100,5 @@ Reconcile before finale.
   colorScheme compile error.
   NEXT: Day 2 - offline core. Rakesh trains real disease model (PlantVillage,
   MobileNetV3, INT8). Tejas builds TFLite service + SQLite layer.
+- 19 Aug 2026 - DAY 2. Trained MobileNetV3 on PlantVillage: 96.19% val accuracy, 38 classes, INT8 TFLite 1.7MB in assets/ml/. Built OfflineClassifier (0.70 confidence threshold), LocalDatabase (scans/advisory_cache/expenses), GeminiService replacing dead OpenRouter, HybridDiagnosisService (on-device first -> cloud escalation). Secrets in .env via flutter_dotenv. All committed.
+  NEXT: Day 3 - wire HybridDiagnosisService into DiagnosisViewModel + UI. Add confidence badge, 'asking expert model' escalation state, and tick/cross feedback buttons that write correctedLabel for retraining.
