@@ -1,0 +1,32 @@
+﻿# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+.pub-cache/
+.pub/
+*.iml
+.idea/
+.metadata
+
+# Secrets
+.env
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Platform ephemeral
+linux/flutter/ephemeral/
+windows/flutter/ephemeral/
+macos/Flutter/ephemeral/
+ios/Flutter/ephemeral/
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
