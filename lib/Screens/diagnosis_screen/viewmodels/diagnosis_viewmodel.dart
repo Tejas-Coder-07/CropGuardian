@@ -146,6 +146,17 @@ class DiagnosisViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _sttLocale() {
+    switch (_selectedLanguage) {
+      case 'Hindi':
+        return 'hi_IN';
+      case 'Kannada':
+        return 'kn_IN';
+      default:
+        return 'en_IN';
+    }
+  }
+
   Future<void> speak() async {
     if (!hasResult) return;
     _isSpeaking = true;
@@ -178,7 +189,9 @@ class DiagnosisViewModel extends ChangeNotifier {
       final available = await _speech.initialize();
       if (available) {
         _isListening = true;
-        _speech.listen(onResult: (r) {
+        _speech.listen(
+          localeId: _sttLocale(),
+          onResult: (r) {
           _description = r.recognizedWords;
           notifyListeners();
         });

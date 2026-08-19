@@ -75,13 +75,15 @@ class DiagnosisScreen extends StatelessWidget {
                                         onChanged: (value) => viewModel.setDescription(value),
                                       ),
                                     ),
-                                    // IconButton(
-                                    //   icon: Icon(
-                                    //     viewModel.isListening ? Icons.mic : Icons.mic_none,
-                                    //     color: viewModel.isListening ? Colors.red : Colors.grey,
-                                    //   ),
-                                    //   onPressed: () => viewModel.toggleVoiceInput(),
-                                    // ),
+                                    IconButton(
+                                      icon: Icon(
+                                        viewModel.isListening ? Icons.mic : Icons.mic_none,
+                                        color: viewModel.isListening ? Colors.red : const Color(0xFF047857),
+                                        size: 26,
+                                      ),
+                                      tooltip: 'Speak instead of typing',
+                                      onPressed: () => viewModel.toggleListening(),
+                                    ),
                                   ],
                                 ),
                               ),
