@@ -108,3 +108,6 @@ Reconcile before finale.
   NEEDED IN .env: OPENWEATHER_API_KEY, TAVILY_API_KEY
   NOT YET TESTED ON DEVICE - USB cable pending. Test offline scan flow when cable arrives.
   NEXT: Day 4 - deploy backend to Render (2 services = qualifies Render track), connect Flutter to backend, add farmer location to profile.
+
+- 19 Aug 2026 - DAY 4 (part). Backend DEPLOYED to Render: https://crop-guardian-api.onrender.com - web service + Postgres (render.yaml blueprint, singapore region). RENDER TRACK QUALIFIED (2 services). Verified live: /health, /api/v1/market/prices/{crop}?lat=&lon= (returns nearest mandi + per-kg), /api/v1/weather/advisory (real OpenWeather data -> disease risk), /api/v1/schemes/search (Tavily, gov domains only). Note: free tier sleeps after 15min idle, ~50s cold start - add keep-alive cron before finale. Note: PowerShell needs quotes around URLs with & or it truncates.
+  NEXT: connect Flutter app to https://crop-guardian-api.onrender.com, add farmer location to profile.
