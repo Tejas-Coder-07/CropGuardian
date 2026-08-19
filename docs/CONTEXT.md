@@ -102,3 +102,9 @@ Reconcile before finale.
   MobileNetV3, INT8). Tejas builds TFLite service + SQLite layer.
 - 19 Aug 2026 - DAY 2. Trained MobileNetV3 on PlantVillage: 96.19% val accuracy, 38 classes, INT8 TFLite 1.7MB in assets/ml/. Built OfflineClassifier (0.70 confidence threshold), LocalDatabase (scans/advisory_cache/expenses), GeminiService replacing dead OpenRouter, HybridDiagnosisService (on-device first -> cloud escalation). Secrets in .env via flutter_dotenv. All committed.
   NEXT: Day 3 - wire HybridDiagnosisService into DiagnosisViewModel + UI. Add confidence badge, 'asking expert model' escalation state, and tick/cross feedback buttons that write correctedLabel for retraining.
+
+- 19 Aug 2026 - DAY 3. Wired HybridDiagnosisService into DiagnosisViewModel. Added _buildOfflineResult UI: ON-DEVICE badge, confidence %, low-confidence warning, 'Ask expert model' escalation button, Correct/Wrong feedback with correction dialog. Built FastAPI backend (backend/): health, market (location-aware via nearest_mandi haversine, per-kg + per-quintal, LinearRegression 7d forecast), weather (OpenWeather -> crop disease risk rules + irrigation advice), schemes (Tavily search restricted to gov domains). Backend runs on uvicorn localhost:8000.
+  KNOWN GAP: market price_index values are estimates, not live Agmarknet data - disclose or replace before finale.
+  NEEDED IN .env: OPENWEATHER_API_KEY, TAVILY_API_KEY
+  NOT YET TESTED ON DEVICE - USB cable pending. Test offline scan flow when cable arrives.
+  NEXT: Day 4 - deploy backend to Render (2 services = qualifies Render track), connect Flutter to backend, add farmer location to profile.
