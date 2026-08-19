@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Added Firebase Auth
 import '../Authentication/login_screen.dart';
 import '../Screens/community_screen/community_screen.dart';
@@ -82,6 +83,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.auto_stories_rounded,
                         index: 3,
                         onTap: () => Get.to(() => const ResourcesScreen()),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Weather Advisory",
+                        hindi: "मौसम सलाह",
+                        icon: Icons.cloud_outlined,
+                        index: 4,
+                        onTap: () => Get.to(() => const WeatherAdvisoryScreen()),
                       ),
                     ],
                   ),
