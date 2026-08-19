@@ -175,6 +175,10 @@ class ApiClient {
     return j == null ? null : SchemeAnswer.fromJson(j);
   }
 
+  /// Escape hatch for endpoints without a typed model yet.
+  Future<Map<String, dynamic>?> rawGet(String path, Map<String, String> params) =>
+      _get(path, params);
+
   Future<bool> isReachable() async {
     final j = await _get('/health', {});
     return j != null;

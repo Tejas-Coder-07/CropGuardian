@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
+import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Added Firebase Auth
 import '../Authentication/login_screen.dart';
 import '../Screens/community_screen/community_screen.dart';
@@ -100,6 +101,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.account_balance_wallet_outlined,
                         index: 5,
                         onTap: () => Get.to(() => const ExpenseTrackerScreen()),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Crop Advisory",
+                        hindi: "फसल सलाह",
+                        icon: Icons.tips_and_updates_outlined,
+                        index: 6,
+                        onTap: () => Get.to(() => const CropAdvisoryScreen()),
                       ),
                     ],
                   ),
