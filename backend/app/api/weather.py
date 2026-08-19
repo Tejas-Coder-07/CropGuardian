@@ -101,7 +101,7 @@ async def weather_advisory(
         )
 
     if resp.status_code != 200:
-        raise HTTPException(resp.status_code, "Weather provider error")
+        raise HTTPException(resp.status_code, f"Weather provider error: {resp.text[:200]}")
 
     data = resp.json()
     first = data["list"][0]

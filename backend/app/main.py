@@ -4,6 +4,10 @@ Author: Tejas S <tejus.sgowda07@gmail.com>
 Team Maverick - Cambridge Institute of Engineering
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
