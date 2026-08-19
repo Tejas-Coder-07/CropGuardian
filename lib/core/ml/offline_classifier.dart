@@ -28,7 +28,14 @@ class OfflinePrediction {
   /// Below this we do not trust the on-device model and escalate to cloud AI.
   static const double confidenceThreshold = 0.70;
 
+  /// Below this the model is effectively guessing - the crop is probably
+  /// not one of the 38 classes it was trained on.
+  static const double unknownThreshold = 0.45;
+
   bool get isConfident => confidence >= confidenceThreshold;
+
+  /// True when the model does not recognise the crop at all.
+  bool get isUnknownCrop => confidence < unknownThreshold;
 
   @override
   String toString() =>

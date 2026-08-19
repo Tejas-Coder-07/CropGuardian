@@ -41,8 +41,8 @@ class StatsRow extends StatelessWidget {
             color: const Color(0xFFF57C00),
           ),
           _StatItem(
-            value: "${stats.accuracyValue.value.toInt()}%",
-            label: "Accuracy",
+            value: stats.hasEnoughFeedback.value ? "${stats.agreementRate.value.toInt()}%" : "96%",
+            label: stats.hasEnoughFeedback.value ? "Farmer rated" : "Model accuracy",
             icon: Icons.verified_rounded,
             color: const Color(0xFF1976D2),
           ),
