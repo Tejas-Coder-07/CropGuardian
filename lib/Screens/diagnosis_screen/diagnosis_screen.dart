@@ -157,6 +157,10 @@ class DiagnosisScreen extends StatelessWidget {
                               ),
             
                             // Diagnosis Result
+                            if (viewModel.hasResult && viewModel.diagnosis == null)
+                              _buildOfflineResult(context, viewModel),
+
+
                             if (viewModel.diagnosis != null)
                               _buildDiagnosisResult(context, viewModel.diagnosis!, viewModel),
             
@@ -171,6 +175,193 @@ class DiagnosisScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildOfflineResult(BuildContext context, DiagnosisViewModel vm) {
+    final conf = (vm.resultConfidence * 100).toStringAsFixed(0);
+    final lowConfidence = vm.resultConfidence < 0.70;
+    final healthy = vm.offlineResult?.isHealthy ?? false;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: lowConfidence ? Colors.orange : const Color(0xFF34D399),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF022C22),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.phone_android, size: 13, color: Color(0xFF34D399)),
+                    SizedBox(width: 5),
+                    Text('ON-DEVICE',
+                        style: TextStyle(
+                            color: Color(0xFF34D399),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Text('$conf% confident',
+                  style: TextStyle(
+                      color: lowConfidence
+                          ? Colors.orange.shade800
+                          : Colors.green.shade800,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(vm.resultCrop,
+              style: const TextStyle(fontSize: 13, color: Colors.black54)),
+          const SizedBox(height: 3),
+          Row(
+            children: [
+              Icon(healthy ? Icons.check_circle : Icons.warning_amber_rounded,
+                  color: healthy ? Colors.green : Colors.orange, size: 22),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(vm.resultTitle,
+                    style: const TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF022C22))),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            healthy
+                ? 'No disease detected. Keep monitoring your crop regularly.'
+                : 'Detected offline in under a second, with no internet connection.',
+            style: const TextStyle(fontSize: 13, color: Colors.black54, height: 1.4),
+          ),
+          if (lowConfidence) ...[
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'I am not fully sure about this one. Connect to the internet and ask the expert model for a detailed answer.',
+                style: TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: vm.isLoading ? null : () => vm.askExpertModel(),
+              icon: vm.isEscalating
+                  ? const SizedBox(
+                      width: 15,
+                      height: 15,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.cloud_outlined, size: 18),
+              label: Text(
+                  vm.isEscalating ? 'Asking expert model...' : 'Ask expert model'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF047857),
+                side: const BorderSide(color: Color(0xFF34D399)),
+                padding: const EdgeInsets.symmetric(vertical: 13),
+              ),
+            ),
+          ),
+          const Divider(height: 28),
+          if (vm.feedbackGiven)
+            const Row(
+              children: [
+                Icon(Icons.check_circle, size: 17, color: Colors.green),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                      'Thank you. This helps improve the model for every farmer.',
+                      style: TextStyle(fontSize: 12.5, color: Colors.black54)),
+                ),
+              ],
+            )
+          else ...[
+            const Text('Was this correct?',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => vm.submitFeedback(),
+                    icon: const Icon(Icons.thumb_up_outlined, size: 16),
+                    label: const Text('Correct'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.green.shade700,
+                      side: BorderSide(color: Colors.green.shade300),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _askCorrection(context, vm),
+                    icon: const Icon(Icons.thumb_down_outlined, size: 16),
+                    label: const Text('Wrong'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red.shade700,
+                      side: BorderSide(color: Colors.red.shade200),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _askCorrection(BuildContext context, DiagnosisViewModel vm) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('What is it actually?'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'e.g. Late blight',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              vm.submitFeedback(correctedLabel: controller.text.trim());
+              Navigator.pop(ctx);
+            },
+            child: const Text('Submit'),
+          ),
+        ],
       ),
     );
   }
