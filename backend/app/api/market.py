@@ -29,9 +29,11 @@ class PriceForecast(BaseModel):
     district: str
     state: str
     distance_km: Optional[float] = None
-    unit: str = "Rs per quintal"
+    unit: str = "Rs per quintal (1 quintal = 100 kg)"
     current_price: float
+    current_price_per_kg: float
     forecast_7d: float
+    forecast_7d_per_kg: float
     change_pct: float
     recommendation: str
     confidence: str
@@ -112,7 +114,9 @@ def get_price_forecast(
         state=mandi.state,
         distance_km=distance,
         current_price=current,
+        current_price_per_kg=round(current / 100, 2),
         forecast_7d=predicted,
+        forecast_7d_per_kg=round(predicted / 100, 2),
         change_pct=change,
         recommendation=recommendation,
         confidence=confidence,
