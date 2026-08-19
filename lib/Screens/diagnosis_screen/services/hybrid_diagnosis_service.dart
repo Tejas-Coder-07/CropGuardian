@@ -117,7 +117,7 @@ class HybridDiagnosisService {
           source: DiagnosisSource.onDevice,
           offline: prediction,
           localScanId: id,
-          error: 'No connection - showing best offline guess.',
+          error: null,
         );
       }
       return HybridResult(

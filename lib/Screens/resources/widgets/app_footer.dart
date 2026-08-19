@@ -104,7 +104,7 @@ class AppFooter extends StatelessWidget {
                 children: [
                   _contactRow(Icons.email_outlined, "tejus.sgowda07@gmail.com"),
                   const SizedBox(height: 15),
-                  _contactRow(Icons.phone_android_outlined, "+91 7054484937\n+977 9806935942"),
+                  _contactRow(Icons.phone_android_outlined, "+91 9513065382\n+91 9741617443"),
                 ],
               ),
             ),
