@@ -1,112 +1,251 @@
-import 'package:crop_guardian/webviewscreen.dart';
+// Crop Guardian - government scheme assistant
+// Author: Tejas S <tejus.sgowda07@gmail.com>
+// Team Maverick - Cambridge Institute of Engineering
+//
+// Live search over official government portals. Scheme rules and deadlines
+// change often enough that a hardcoded list is wrong within a season.
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/location/location_service.dart';
 
-import '../widgets/app_footer.dart';
-import '../widgets/scheme_card.dart';
+class GovernmentSchemesPage extends StatefulWidget {
+  final String? searchQuery;
+  const GovernmentSchemesPage({super.key, this.searchQuery});
 
-class GovernmentSchemesPage extends StatelessWidget {
-  final String searchQuery; // Receive search query from ResourcesScreen
+  @override
+  State<GovernmentSchemesPage> createState() => _GovernmentSchemesPageState();
+}
 
-  const GovernmentSchemesPage({super.key, required this.searchQuery});
+class _GovernmentSchemesPageState extends State<GovernmentSchemesPage> {
+  static const _suggestions = [
+    'PM Kisan eligibility',
+    'Crop insurance PMFBY',
+    'Soil Health Card',
+    'Kisan Credit Card loan',
+    'Drip irrigation subsidy',
+    'Free seeds scheme',
+  ];
+
+  final _controller = TextEditingController();
+  SchemeAnswer? _answer;
+  String? _state;
+  bool _loading = false;
+  String _error = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
+  }
+
+  Future<void> _loadState() async {
+    final farm = await LocationService.instance.load();
+    if (mounted) setState(() => _state = farm?.state);
+  }
+
+  Future<void> _search(String q) async {
+    if (q.trim().isEmpty) return;
+    FocusScope.of(context).unfocus();
+    setState(() { _loading = true; _error = ''; _answer = null; });
+
+    final a = await ApiClient.instance.searchSchemes(query: q, state: _state);
+    if (!mounted) return;
+    setState(() {
+      _answer = a;
+      _loading = false;
+      if (a == null) _error = 'Could not reach the scheme service. Check your connection.';
+    });
+  }
+
+  Future<void> _open(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // 1. DATA SOURCE (Kept exactly as your original backend/URLs)
-    final List<Map<String, dynamic>> allSchemes = [
-      {
-        "title": "PM-KISAN Scheme",
-        "hindi": "पीएम किसान योजना",
-        "tag": "Financial Support",
-        "desc": "Direct income support of ₹6000 per year to all farmer families.",
-        "url": "https://pmkisan.gov.in/",
-      },
-      {
-        "title": "Pradhan Mantri Fasal Bima Yojana",
-        "hindi": "प्रधानमंत्री फसल बीमा योजना",
-        "tag": "Insurance",
-        "desc": "Crop insurance scheme to protect farmers against crop loss.",
-        "url": "https://pmfby.gov.in/",
-      },
-      {
-        "title": "Soil Health Card Scheme",
-        "hindi": "मृदा स्वास्थ्य कार्ड योजना",
-        "tag": "Agricultural Support",
-        "desc": "Provides soil health cards with crop-wise recommendations.",
-        "url": "https://soilhealth.dac.gov.in/home",
-      },
-    ];
-
-    // 2. SEARCH FILTER LOGIC (Filters by English or Hindi name)
-    final filteredList = allSchemes.where((scheme) {
-      final name = scheme['title'].toString().toLowerCase();
-      final hindi = scheme['hindi'].toString().toLowerCase();
-      return name.contains(searchQuery) || hindi.contains(searchQuery);
-    }).toList();
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      physics: const BouncingScrollPhysics(),
-      child: Column(
+    return Container(
+      color: const Color(0xFFF0FDF4),
+      child: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          const SizedBox(height: 15),
-
-          // 3. GENERATE FILTERED CARDS
-          if (filteredList.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 50),
-              child: Column(
-                children: [
-                  Icon(Icons.search_off, size: 50, color: Colors.green.withOpacity(0.5)),
-                  const SizedBox(height: 10),
-                  const Text("No schemes found / कोई योजना नहीं मिली",
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
-                ],
-              ),
-            )
-          else
-            ...filteredList.map((scheme) {
-              return SchemeCard(
-                title: scheme['title'],
-                hindi: scheme['hindi'],
-                tag: scheme['tag'],
-                description: scheme['desc'],
-                button: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WebViewScreen(
-                            url: scheme['url'],
-                            title: scheme['title'].toString().toUpperCase(),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.open_in_new, size: 18, color: Colors.white),
-                    label: const Text("LEARN MORE / जानकारी प्राप्त करें",
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1B5E20), // Premium Dark Green
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-
+          _searchBox(),
+          const SizedBox(height: 14),
+          if (_answer == null && !_loading) _suggestionChips(),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 50),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          if (_error.isNotEmpty) _errorBox(),
+          if (_answer != null) ..._results(_answer!),
           const SizedBox(height: 30),
-
-          // ✅ FOOTER KEPT AS IT IS
-          const AppFooter(),
-          const SizedBox(height: 20),
         ],
       ),
     );
   }
+
+  Widget _searchBox() => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFA7F3D0)),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 14),
+            const Icon(Icons.search, color: Color(0xFF047857)),
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                textInputAction: TextInputAction.search,
+                onSubmitted: _search,
+                decoration: const InputDecoration(
+                  hintText: 'Ask about any farmer scheme...',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_forward, color: Color(0xFF166534)),
+              onPressed: () => _search(_controller.text),
+            ),
+          ],
+        ),
+      );
+
+  Widget _suggestionChips() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _state != null
+                ? 'Common questions for farmers in $_state'
+                : 'Common questions',
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _suggestions
+                .map((s) => ActionChip(
+                      label: Text(s, style: const TextStyle(fontSize: 12.5)),
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFFA7F3D0)),
+                      onPressed: () {
+                        _controller.text = s;
+                        _search(s);
+                      },
+                    ))
+                .toList(),
+          ),
+        ],
+      );
+
+  List<Widget> _results(SchemeAnswer a) => [
+        if (a.answer != null && a.answer!.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: const Color(0xFF022C22),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.auto_awesome, size: 16, color: Color(0xFF34D399)),
+                    SizedBox(width: 8),
+                    Text('ANSWER',
+                        style: TextStyle(
+                            color: Color(0xFF34D399),
+                            fontSize: 11,
+                            letterSpacing: 0.8,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(a.answer!,
+                    style: const TextStyle(
+                        color: Colors.white, fontSize: 14.5, height: 1.5)),
+              ],
+            ),
+          ),
+        const SizedBox(height: 18),
+        if (a.results.isNotEmpty)
+          const Text('Official sources',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+        const SizedBox(height: 10),
+        ...a.results.map((r) => Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFA7F3D0)),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(14),
+                title: Text(r.title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14.5)),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        r.summary.length > 160
+                            ? '${r.summary.substring(0, 160)}...'
+                            : r.summary,
+                        style: const TextStyle(fontSize: 12.5, height: 1.4),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.verified,
+                              size: 13, color: Color(0xFF047857)),
+                          const SizedBox(width: 5),
+                          Text(r.sourceName,
+                              style: const TextStyle(
+                                  fontSize: 11.5, color: Color(0xFF047857))),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                trailing: const Icon(Icons.open_in_new, size: 18),
+                onTap: () => _open(r.sourceUrl),
+              ),
+            )),
+        const SizedBox(height: 8),
+        Text(a.disclaimer,
+            style: const TextStyle(
+                fontSize: 11.5, color: Colors.black45, height: 1.4)),
+      ];
+
+  Widget _errorBox() => Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.orange.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.wifi_off, color: Colors.orange.shade700),
+            const SizedBox(width: 12),
+            Expanded(child: Text(_error, style: const TextStyle(fontSize: 13.5))),
+          ],
+        ),
+      );
 }
