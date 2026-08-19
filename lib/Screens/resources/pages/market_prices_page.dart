@@ -1,186 +1,326 @@
-import 'package:flutter/material.dart';
-import '../widgets/app_footer.dart';
-import '../widgets/market_price_card.dart';
+// Crop Guardian - live market prices
+// Author: Tejas S <tejus.sgowda07@gmail.com>
+// Team Maverick - Cambridge Institute of Engineering
+//
+// Prices resolve to the farmer's nearest mandi, shown per kg because that is
+// how a farmer thinks, with a sell-or-hold recommendation from the forecast.
 
-class MarketPricesPage extends StatelessWidget {
-  final String searchQuery;
-  const MarketPricesPage({super.key, required this.searchQuery});
+import 'package:flutter/material.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/location/location_service.dart';
+
+class MarketPricesPage extends StatefulWidget {
+  final String? searchQuery;
+  const MarketPricesPage({super.key, this.searchQuery});
+
+  @override
+  State<MarketPricesPage> createState() => _MarketPricesPageState();
+}
+
+class _MarketPricesPageState extends State<MarketPricesPage> {
+  static const _crops = [
+    'tomato', 'onion', 'potato', 'wheat', 'rice',
+    'maize', 'cotton', 'sugarcane', 'ragi', 'groundnut',
+  ];
+
+  String _selected = 'tomato';
+  MarketPrice? _price;
+  FarmLocation? _farm;
+  bool _loading = true;
+  String _error = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    _farm = await LocationService.instance.load();
+    if (_farm == null) {
+      setState(() {
+        _loading = false;
+        _error = 'location';
+      });
+      return;
+    }
+    await _fetch();
+  }
+
+  Future<void> _fetch() async {
+    setState(() { _loading = true; _error = ''; });
+
+    final p = await ApiClient.instance.marketPrice(
+      crop: _selected,
+      lat: _farm!.latitude,
+      lon: _farm!.longitude,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _price = p;
+      _loading = false;
+      if (p == null) _error = 'network';
+    });
+  }
+
+  Future<void> _setLocation() async {
+    setState(() => _loading = true);
+    final loc = await LocationService.instance.detectFromGps();
+    if (!mounted) return;
+    if (loc == null) {
+      setState(() { _loading = false; _error = 'permission'; });
+      return;
+    }
+    _farm = loc;
+    await _fetch();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> data = [
-      {"crop": "Wheat ", "price": "₹31.82/kg"},
-      {"crop": "Rice ", "price": "₹43.22"},
-      {"crop": "Tur/Arhar Dal", "price": "₹116.05/kg"},
-      {"crop": "Sugar", "price": "₹46.39/kg"},
-      {"crop": "Potato", "price": "₹24.07/kg"},
-      {"crop": "Onion", "price": "₹32/kg"},
-      {"crop": "Tomato", "price": "₹57.55/kg"},
-      {"crop": "Brinjal", "price": "₹42.41/kg"},
-      {"crop": "Lady Finger(Okra)", "price": "₹30-40/kg"},
-      {"crop": "CauliFlower", "price": "₹40-60/kg"},
-      {"crop": "Banana", "price": "₹47.02/kg"},
-      {"crop": "Papaya", "price": "₹35/kg"},
-      {"crop": "Pomegranate", "price": "₹130/kg"},
-      {"crop": "Apple", "price": "₹140-170/kg"},
-      {"crop": "Cardamom", "price": "₹2500/kg"},
-      {"crop": "Cucumber", "price": "₹40/kg"},
-      {"crop": "Green Pea", "price": "₹35/kg"},
-      {"crop": "Garlic", "price": "₹125/kg"},
-      {"crop": "Turmeric", "price": "₹150/kg"},
-      {"crop": "Green Chilli", "price": "₹53-58/kg"},
-      {"crop": "Beetroot", "price": "₹45/kg"},
-      {"crop": "Raw Banana", "price": "₹17/kg"},
-      {"crop": "Amaranth Leaves", "price": "₹14/kg"},
-      {"crop": "Amla", "price": "₹65/kg"},
-      {"crop": "Baby Corn", "price": "₹54/kg"},
-      {"crop": "Banana Flower", "price": "₹15/kg"},
-      {"crop": "Capsicum", "price": "₹50/kg"},
-      {"crop": "Bitter Gourd", "price": "₹39/kg"},
-      {"crop": "Bottle Gourd", "price": "₹30/kg"},
-      {"crop": "Butter Beans", "price": "₹46/kg"},
-      {"crop": "Cabbage", "price": "₹27/kg"},
-      {"crop": "Carrot", "price": "₹43/kg"},
-      {"crop": "Coconut", "price": "₹66/kg"},
-      {"crop": "Corn", "price": "32/kg"},
-      {"crop": "Pomegranate", "price": "₹70/Piece"},
-      {"crop": "RamPhal Fruit", "price": "₹350/kg"},
-      {"crop": "Smart Papaya", "price": "₹40/kg"},
-      {"crop": "Cucumber", "price": "₹30/kg"},
-      {"crop": "Ginger", "price": "₹77/kg"},
-      {"crop": "Mushroom", "price": "₹99/kg"},
-      {"crop": "Jamun", "price": "₹140-170/kg"},
-      {"crop": "Mustard Leaves ", "price": "₹15/kg"},
-      {"crop": "Radish", "price": "₹34/kg"},
-      {"crop": "Spinach", "price": "₹13/kg"},
-      {"crop": "Sweet Potato", "price": "₹58/kg"},
-      {"crop": "Lemon", "price": "₹56/kg"},
-      {"crop": "Garlic", "price": "₹98/kg"},
-      {"crop": "Ginger", "price": "₹77/kg"},
-      {"crop": "Rose (Local)", "price": "₹150/kg"},
-      {"crop": "Marigold (Yellow)", "price": "₹60/kg"},
-      {"crop": "Marigold (Orange)", "price": "₹70/kg"},
-      {"crop": "Jasmine (Mogra)", "price": "₹450/kg"},
-      {"crop": "Chrysanthemum", "price": "₹120/kg"},
-      {"crop": "Tuberose (Rajnigandha)", "price": "₹250/kg"},
-      {"crop": "Lotus", "price": "₹25/piece"},
-      {"crop": "Gerbera", "price": "₹15/piece"},
-      {"crop": "Orchid", "price": "₹60/stick"},
-      {"crop": "Carnation", "price": "₹20/piece"},
-      {"crop": "Bajra (Pearl Millet)", "price": "₹28/kg"},
-      {"crop": "Jowar (Sorghum)", "price": "₹42/kg"},
-      {"crop": "Ragi (Finger Millet)", "price": "₹48/kg"},
-      {"crop": "Barley (Jau)", "price": "₹32/kg"},
-      {"crop": "Maize (Corn Grain)", "price": "₹25/kg"},
-      {"crop": "Black Gram (Urad Whole)", "price": "₹115/kg"},
-      {"crop": "Green Gram (Moong Whole)", "price": "₹105/kg"},
-      {"crop": "Lentil (Masoor Dal)", "price": "₹92/kg"},
-      {"crop": "Chickpeas (Kabuli Chana)", "price": "₹135/kg"},
-      {"crop": "Soybean", "price": "₹52/kg"},
-      {"crop": "Mustard Seeds (Rai)", "price": "₹75/kg"},
-      {"crop": "Cumin (Jeera)", "price": "₹285/kg"},
-      {"crop": "Fennel Seeds (Saunf)", "price": "₹180/kg"},
-      {"crop": "Black Pepper", "price": "₹650/kg"},
-      {"crop": "Cloves", "price": "₹950/kg"},
-      {"crop": "Cinnamon", "price": "₹450/kg"},
-      {"crop": "Fenugreek Seeds", "price": "₹85/kg"},
-      {"crop": "Dry Red Chilli", "price": "₹220/kg"},
-      {"crop": "Coriander Seeds", "price": "₹145/kg"},
-      {"crop": "Sesame Seeds (Til)", "price": "₹190/kg"},
-      {"crop": "Guava (Allahabadi)", "price": "₹55/kg"},
-      {"crop": "Grapes (Black)", "price": "₹125/kg"},
-      {"crop": "Grapes (Green Seedless)", "price": "₹95/kg"},
-      {"crop": "Sapota (Chiku)", "price": "₹45/kg"},
-      {"crop": "Custard Apple (Sitaphal)", "price": "₹85/kg"},
-      {"crop": "Kiwi", "price": "₹35/piece"},
-      {"crop": "Dragon Fruit", "price": "₹80/piece"},
-      {"crop": "Musk Melon", "price": "₹50/kg"},
-      {"crop": "Water Melon", "price": "₹30/kg"},
-      {"crop": "Orange (Nagpur)", "price": "₹65/kg"},
-      {"crop": "Kinnow", "price": "₹45/kg"},
-      {"crop": "Pineapple (Rani)", "price": "₹75/piece"},
-      {"crop": "Pear (Nashpati)", "price": "₹90/kg"},
-      {"crop": "Plum", "price": "₹160/kg"},
-      {"crop": "Strawberry", "price": "₹60/packet"},
-      {"crop": "Blueberry", "price": "₹250/packet"},
-      {"crop": "Avocado", "price": "₹150/piece"},
-      {"crop": "Sweet Lime (Mosambi)", "price": "₹55/kg"},
-      {"crop": "Wood Apple (Bel)", "price": "₹30/piece"},
-      {"crop": "Jackfruit", "price": "₹45/kg"},
-      {"crop": "Ber (Jujube)", "price": "₹40/kg"},
-      {"crop": "Dates (Dry)", "price": "₹280/kg"},
-      {"crop": "Figs (Fresh)", "price": "₹180/kg"},
-      {"crop": "Star Fruit", "price": "₹40/kg"},
-      {"crop": "Mulberry", "price": "₹120/kg"},
-      {"crop": "Passion Fruit", "price": "₹220/kg"},
-      {"crop": "Peach", "price": "₹140/kg"},
-      {"crop": "Apricot", "price": "₹250/kg"},
-      {"crop": "Litchi", "price": "₹200/kg"},
-      {"crop": "Coconut (Dry/Gola)", "price": "₹160/kg"},
-      {"crop": "French Beans", "price": "₹45/kg"},
-      {"crop": "Ash Gourd", "price": "₹28/kg"},
-      {"crop": "Snake Gourd", "price": "₹42/kg"},
-      {"crop": "Cluster Beans", "price": "₹35/kg"},
-      {"crop": "Drumstick", "price": "₹185/kg"},
-      {"crop": "Colocasia (Arbi)", "price": "₹40/kg"},
-      {"crop": "Elephant Foot Yam", "price": "₹38/kg"},
-      {"crop": "Tinda (Apple Gourd)", "price": "₹28/kg"},
-      {"crop": "Pointed Gourd (Parwal)", "price": "₹55/kg"},
-      {"crop": "Ridge Gourd", "price": "₹40/kg"},
-      {"crop": "Sponge Gourd", "price": "₹35/kg"},
-      {"crop": "Ivy Gourd (Kundru)", "price": "₹32/kg"},
-      {"crop": "Spring Onion", "price": "₹25/bundle"},
-      {"crop": "Broccoli", "price": "₹90/kg"},
-      {"crop": "Red Cabbage", "price": "₹45/kg"},
-      {"crop": "Sweet Corn", "price": "₹35/kg"},
-      {"crop": "Green Peas (Premium)", "price": "₹42/kg"},
-      {"crop": "Raw Papaya", "price": "₹28/kg"},
-      {"crop": "Yam (Ratalu)", "price": "₹45/kg"},
-      {"crop": "Methi (Fenugreek Leaves)", "price": "₹15/bundle"},
-      {"crop": "Coriander Leaves", "price": "₹22/kg"},
-      {"crop": "Mint Leaves", "price": "₹25/bundle"},
-      {"crop": "Curry Leaves", "price": "₹10/bundle"},
-      {"crop": "Turnip (Shalgam)", "price": "₹30/kg"},
-      {"crop": "Zucchini (Green)", "price": "₹75/kg"},
-      {"crop": "Zucchini (Yellow)", "price": "₹85/kg"},
-      {"crop": "Lettuce", "price": "₹60/kg"},
-      {"crop": "Celery", "price": "₹45/bundle"},
-      {"crop": "Leeks", "price": "₹50/kg"},
-      {"crop": "Cherry Tomato", "price": "₹120/kg"},
-      {"crop": "Bok Choy", "price": "₹80/kg"},
-      {"crop": "Asparagus", "price": "₹450/kg"},
-      {"crop": "Brussel Sprouts", "price": "₹180/kg"},
-      {"crop": "Baby Potatoes", "price": "₹28/kg"},
-      {"crop": "Chinese Cabbage", "price": "₹40/kg"},
-      {"crop": "Snow Peas", "price": "₹250/kg"},
-      {"crop": "Water Chestnut (Singhara)", "price": "₹65/kg"},
-      {"crop": "Lotus Stem (Kamal Kakdi)", "price": "₹55/kg"},
-      {"crop": "Kohlrabi (Ganth Gobi)", "price": "₹35/kg"},
-      {"crop": "Green Garlic", "price": "₹40/bundle"}
-    ];
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0FDF4),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF166534),
+        foregroundColor: Colors.white,
+        title: const Column(
+          children: [
+            Text('Market Prices', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('मंडी भाव', style: TextStyle(fontSize: 13)),
+          ],
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            tooltip: 'Update location',
+            onPressed: _setLocation,
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _fetch,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            if (_farm != null) _locationBar(),
+            const SizedBox(height: 14),
+            _cropSelector(),
+            const SizedBox(height: 18),
+            if (_loading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 60),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_error.isNotEmpty)
+              _errorCard()
+            else if (_price != null)
+              _priceCard(_price!),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
 
-    final filteredList = data.where((item) {
-      return item['crop']!.toLowerCase().contains(searchQuery);
-    }).toList();
+  Widget _locationBar() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFA7F3D0)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.storefront, size: 18, color: Color(0xFF047857)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                _price != null
+                    ? '${_price!.mandi} mandi, ${_price!.district}'
+                    : _farm!.label,
+                style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
+              ),
+            ),
+            if (_price?.distanceKm != null)
+              Text('${_price!.distanceKm!.toStringAsFixed(0)} km',
+                  style: const TextStyle(fontSize: 12, color: Colors.black54)),
+          ],
+        ),
+      );
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      physics: BouncingScrollPhysics(),
+  Widget _cropSelector() => SizedBox(
+        height: 42,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: _crops.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (_, i) {
+            final crop = _crops[i];
+            final active = crop == _selected;
+            return ChoiceChip(
+              label: Text(crop[0].toUpperCase() + crop.substring(1)),
+              selected: active,
+              onSelected: (_) {
+                setState(() => _selected = crop);
+                _fetch();
+              },
+              selectedColor: const Color(0xFF34D399),
+              labelStyle: TextStyle(
+                color: active ? const Color(0xFF022C22) : Colors.black87,
+                fontWeight: active ? FontWeight.bold : FontWeight.normal,
+              ),
+            );
+          },
+        ),
+      );
+
+  Widget _priceCard(MarketPrice p) {
+    final rising = p.isRising;
+    final trendColor = rising ? const Color(0xFF047857) : Colors.orange.shade800;
+
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFF34D399), width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('TODAY\u0027S PRICE',
+                  style: TextStyle(fontSize: 11, letterSpacing: 0.8, color: Colors.black54)),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text('₹${p.currentPricePerKg.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                          fontSize: 38, fontWeight: FontWeight.bold, color: Color(0xFF022C22))),
+                  const SizedBox(width: 6),
+                  const Text('/ kg', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                ],
+              ),
+              Text('₹${p.currentPrice.toStringAsFixed(0)} per quintal (100 kg)',
+                  style: const TextStyle(fontSize: 13, color: Colors.black54)),
+              const Divider(height: 26),
+              Row(
+                children: [
+                  Icon(rising ? Icons.trending_up : Icons.trending_down,
+                      color: trendColor, size: 20),
+                  const SizedBox(width: 8),
+                  Text('${rising ? "+" : ""}${p.changePct.toStringAsFixed(1)}% in 7 days',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: trendColor)),
+                  const Spacer(),
+                  Text('₹${p.forecast7dPerKg.toStringAsFixed(2)}/kg',
+                      style: TextStyle(fontSize: 13, color: trendColor)),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: rising ? const Color(0xFFECFDF5) : Colors.orange.shade50,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(rising ? Icons.savings_outlined : Icons.schedule,
+                  color: trendColor, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(p.recommendation,
+                    style: const TextStyle(fontSize: 14, height: 1.4)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        _historyCard(p),
+        const SizedBox(height: 14),
+        Text(p.disclaimer,
+            style: const TextStyle(fontSize: 11.5, color: Colors.black45, height: 1.4)),
+      ],
+    );
+  }
+
+  Widget _historyCard(MarketPrice p) {
+    final last = p.history.length > 7
+        ? p.history.sublist(p.history.length - 7)
+        : p.history;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFA7F3D0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Last 7 days',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+          const SizedBox(height: 12),
+          ...last.map((h) {
+            final price = (h['modal_price'] as num).toDouble();
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                children: [
+                  Text(h['on_date'].toString().substring(5),
+                      style: const TextStyle(fontSize: 12.5, color: Colors.black54)),
+                  const Spacer(),
+                  Text('₹${(price / 100).toStringAsFixed(2)}/kg',
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorCard() {
+    final needsLocation = _error == 'location' || _error == 'permission';
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.orange.shade200),
+      ),
       child: Column(
         children: [
-          const SizedBox(height: 10),
-          // Using ListView.shrinkWrap to allow it to sit above the footer
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: filteredList.length,
-            itemBuilder: (context, index) => MarketPriceCard(
-              crop: filteredList[index]['crop']!,
-              price: filteredList[index]['price']!,
+          Icon(needsLocation ? Icons.location_off : Icons.wifi_off,
+              size: 40, color: Colors.orange.shade700),
+          const SizedBox(height: 14),
+          Text(
+            needsLocation
+                ? 'Set your farm location to see prices from your nearest mandi.'
+                : 'Could not reach the price service. Check your connection and pull down to retry.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, height: 1.4),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: needsLocation ? _setLocation : _fetch,
+            icon: Icon(needsLocation ? Icons.my_location : Icons.refresh),
+            label: Text(needsLocation ? 'Use my location' : 'Retry'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF166534),
+              foregroundColor: Colors.white,
             ),
           ),
-          const SizedBox(height: 40),
-          const AppFooter(), // Footer added here
         ],
       ),
     );
