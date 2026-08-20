@@ -196,6 +196,14 @@ class DiagnosisViewModel extends ChangeNotifier {
         _isListening = true;
         _speech.listen(
           localeId: _sttLocale(),
+          listenOptions: stt.SpeechListenOptions(
+            listenMode: stt.ListenMode.dictation,
+            partialResults: true,
+            cancelOnError: false,
+            autoPunctuation: true,
+          ),
+          listenFor: const Duration(seconds: 45),
+          pauseFor: const Duration(seconds: 6),
           onResult: (r) {
           _description = r.recognizedWords;
             descriptionController.text = r.recognizedWords;
