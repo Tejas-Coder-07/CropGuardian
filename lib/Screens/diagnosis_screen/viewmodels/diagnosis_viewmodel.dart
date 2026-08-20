@@ -14,6 +14,7 @@ class DiagnosisViewModel extends ChangeNotifier {
   final HybridDiagnosisService _service = HybridDiagnosisService();
   final TtsService _ttsService = TtsService();
   late stt.SpeechToText _speech;
+  final TextEditingController descriptionController = TextEditingController();
 
   File? _selectedImage;
   String _description = '';
@@ -186,13 +187,21 @@ class DiagnosisViewModel extends ChangeNotifier {
       await _speech.stop();
       _isListening = false;
     } else {
-      final available = await _speech.initialize();
+      final available = await _speech.initialize(
+        onError: (e) => print('STT ERROR: ${e.errorMsg}'),
+        onStatus: (s) => print('STT STATUS: $s'),
+      );
+      print('STT AVAILABLE: $available');
       if (available) {
         _isListening = true;
         _speech.listen(
           localeId: _sttLocale(),
           onResult: (r) {
           _description = r.recognizedWords;
+            descriptionController.text = r.recognizedWords;
+            descriptionController.selection = TextSelection.fromPosition(
+              TextPosition(offset: descriptionController.text.length),
+            );
           notifyListeners();
         });
       }

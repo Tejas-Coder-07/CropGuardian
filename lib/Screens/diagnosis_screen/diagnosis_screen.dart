@@ -66,6 +66,7 @@ class DiagnosisScreen extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: TextField(
+                                        controller: viewModel.descriptionController,
                                         decoration: const InputDecoration(
                                           hintText: 'Describe crop issue (optional)',
                                           border: InputBorder.none,
