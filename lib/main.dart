@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:crop_guardian/core/alerts/alert_service.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ void main() async{
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
     );
+    AlertService.instance.init();
     runApp(
         ChangeNotifierProvider(
           create: (_) => DiagnosisViewModel(

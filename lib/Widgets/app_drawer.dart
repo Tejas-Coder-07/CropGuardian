@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
+import 'package:crop_guardian/Screens/alerts/alerts_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Added Firebase Auth
 import '../Authentication/login_screen.dart';
 import '../Screens/community_screen/community_screen.dart';
@@ -109,6 +110,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.tips_and_updates_outlined,
                         index: 6,
                         onTap: () => Get.to(() => const CropAdvisoryScreen()),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Emergency Alerts",
+                        hindi: "आपातकालीन चेतावनी",
+                        icon: Icons.notifications_active_outlined,
+                        index: 7,
+                        onTap: () => Get.to(() => const AlertsScreen()),
                       ),
                     ],
                   ),
