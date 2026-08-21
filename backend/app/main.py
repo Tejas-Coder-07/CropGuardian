@@ -11,7 +11,7 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import health, market, weather, schemes, advisory
+from app.api import health, market, weather, schemes, advisory, alerts
 
 app = FastAPI(
     title="Crop Guardian API",
@@ -32,6 +32,7 @@ app.include_router(market.router, prefix="/api/v1/market", tags=["market"])
 app.include_router(weather.router, prefix="/api/v1/weather", tags=["weather"])
 app.include_router(schemes.router, prefix="/api/v1/schemes", tags=["schemes"])
 app.include_router(advisory.router, prefix="/api/v1/advisory", tags=["advisory"])
+app.include_router(alerts.router, prefix="/api/v1/alerts", tags=["alerts"])
 
 
 @app.get("/")
