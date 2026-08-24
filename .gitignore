@@ -36,3 +36,5 @@ backend/venv/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+backend/earth-engine-key.json
