@@ -4,6 +4,7 @@ import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
 import 'package:crop_guardian/Screens/alerts/alerts_screen.dart';
+import 'package:crop_guardian/Widgets/language_picker_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Added Firebase Auth
 import '../Authentication/login_screen.dart';
 import '../Screens/community_screen/community_screen.dart';
@@ -118,6 +119,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.notifications_active_outlined,
                         index: 7,
                         onTap: () => Get.to(() => const AlertsScreen()),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Language",
+                        hindi: "भाषा / ಭಾಷೆ",
+                        icon: Icons.language,
+                        index: 8,
+                        onTap: () => LanguagePickerSheet.show(context),
                       ),
                     ],
                   ),
