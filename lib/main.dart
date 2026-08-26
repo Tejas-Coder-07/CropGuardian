@@ -10,10 +10,14 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:crop_guardian/core/alerts/alert_service.dart';
+import 'package:crop_guardian/core/language/language_controller.dart';
+import 'package:crop_guardian/l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await LanguageController.instance.load();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -51,13 +55,26 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crop Guardian',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF34D399)),
-      ),
-      home: user !=null ? VibrantFarmerSplash() : LoginScreen(),
+    return AnimatedBuilder(
+      animation: LanguageController.instance,
+      builder: (context, _) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Crop Guardian',
+          locale: LanguageController.instance.locale,
+          supportedLocales: LanguageController.supported,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF34D399)),
+          ),
+          home: user != null ? VibrantFarmerSplash() : LoginScreen(),
+        );
+      },
     );
   }
   // @override
