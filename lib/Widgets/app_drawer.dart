@@ -7,6 +7,7 @@ import 'package:crop_guardian/Widgets/accessibility_sheet.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/admin/admin_panel_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
+import 'package:crop_guardian/Screens/carbon/carbon_footprint_screen.dart';
 import 'package:crop_guardian/Screens/alerts/alerts_screen.dart';
 import 'package:crop_guardian/Widgets/language_picker_sheet.dart';
 import 'package:crop_guardian/l10n/app_localizations.dart';
@@ -156,6 +157,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.admin_panel_settings_outlined,
                         index: 11,
                         onTap: () => Get.to(() => const AdminPanelScreen()),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Carbon Footprint",
+                        hindi: "कार्बन फुटप्रिंट",
+                        icon: Icons.eco_outlined,
+                        index: 12,
+                        onTap: () => Get.to(() => const CarbonFootprintScreen()),
                       ),
                     ],
                   ),
