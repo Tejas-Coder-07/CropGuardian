@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
 import 'package:crop_guardian/Screens/alerts/alerts_screen.dart';
 import 'package:crop_guardian/Widgets/language_picker_sheet.dart';
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Added Firebase Auth
 import '../Authentication/login_screen.dart';
 import '../Screens/community_screen/community_screen.dart';
@@ -58,7 +60,7 @@ class AppDrawer extends StatelessWidget {
                     children: [
                       _buildGradientTile(
                         context,
-                        title: "Dashboard",
+                        title: AppLocalizations.of(context).dashboard,
                         hindi: "डैशबोर्ड",
                         icon: Icons.dashboard_customize_rounded,
                         index: 0,
@@ -66,7 +68,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "AI Diagnosis",
+                        title: AppLocalizations.of(context).aiDiagnosis,
                         hindi: "फसल रोग निदान",
                         icon: Icons.center_focus_strong_rounded,
                         index: 1,
@@ -74,7 +76,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Community",
+                        title: AppLocalizations.of(context).community,
                         hindi: "किसान समुदाय",
                         icon: Icons.forum_rounded,
                         index: 2,
@@ -82,7 +84,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Resources",
+                        title: AppLocalizations.of(context).resources,
                         hindi: "संसाधन केंद्र",
                         icon: Icons.auto_stories_rounded,
                         index: 3,
@@ -90,7 +92,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Weather Advisory",
+                        title: AppLocalizations.of(context).weatherAdvisory,
                         hindi: "मौसम सलाह",
                         icon: Icons.cloud_outlined,
                         index: 4,
@@ -98,7 +100,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Farm Expenses",
+                        title: AppLocalizations.of(context).farmExpenses,
                         hindi: "खर्च रिकॉर्ड",
                         icon: Icons.account_balance_wallet_outlined,
                         index: 5,
@@ -106,7 +108,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Crop Advisory",
+                        title: AppLocalizations.of(context).cropAdvisory,
                         hindi: "फसल सलाह",
                         icon: Icons.tips_and_updates_outlined,
                         index: 6,
@@ -114,7 +116,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Emergency Alerts",
+                        title: AppLocalizations.of(context).emergencyAlerts,
                         hindi: "आपातकालीन चेतावनी",
                         icon: Icons.notifications_active_outlined,
                         index: 7,
@@ -122,7 +124,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Language",
+                        title: AppLocalizations.of(context).language,
                         hindi: "भाषा / ಭಾಷೆ",
                         icon: Icons.language,
                         index: 8,
