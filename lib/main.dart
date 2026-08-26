@@ -1,6 +1,7 @@
 import 'package:crop_guardian/Authentication/login_screen.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/viewmodels/diagnosis_viewmodel.dart';
 import 'package:crop_guardian/core/user/role_controller.dart';
+import 'package:crop_guardian/core/accessibility/accessibility_controller.dart';
 import 'package:crop_guardian/firebase_options.dart';
 import 'package:crop_guardian/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +21,7 @@ void main() async{
   await dotenv.load(fileName: ".env");
   await LanguageController.instance.load();
   await RoleController.instance.load();
+  await AccessibilityController.instance.load();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -58,7 +60,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: LanguageController.instance,
+      animation: Listenable.merge([LanguageController.instance, AccessibilityController.instance]),
       builder: (context, _) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
@@ -73,6 +75,11 @@ class _MyAppState extends State<MyApp> {
           ],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF34D399)),
+          ),
+          builder: (context, child) => MediaQuery.withClampedTextScaling(
+            minScaleFactor: AccessibilityController.instance.textScale,
+            maxScaleFactor: AccessibilityController.instance.textScale,
+            child: child!,
           ),
           home: user != null ? VibrantFarmerSplash() : LoginScreen(),
         );

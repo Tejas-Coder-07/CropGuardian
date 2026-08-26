@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/Widgets/role_picker_sheet.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
+import 'package:crop_guardian/Widgets/accessibility_sheet.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
 import 'package:crop_guardian/Screens/alerts/alerts_screen.dart';
@@ -138,6 +139,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.swap_horiz,
                         index: 9,
                         onTap: () => RolePickerSheet.show(context),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Accessibility",
+                        hindi: "सुगम्यता",
+                        icon: Icons.accessibility_new,
+                        index: 10,
+                        onTap: () => AccessibilitySheet.show(context),
                       ),
                     ],
                   ),
