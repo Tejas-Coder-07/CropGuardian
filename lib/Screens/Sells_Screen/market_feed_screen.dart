@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crop_guardian/Widgets/bid_sheet.dart';
+import 'package:crop_guardian/core/marketplace/bid_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -306,6 +308,37 @@ class _MarketFeedScreenState extends State<MarketFeedScreen> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: () => BidSheet.show(
+                                    context,
+                                    listingId: doc.id,
+                                    cropName: d['productName'] ?? 'Produce',
+                                    askingPrice:
+                                        (d['price'] as num?)?.toDouble() ?? 0,
+                                    sellerId: d['sellerId'] ?? '',
+                                  ),
+                                  icon: const Icon(Icons.gavel, size: 17),
+                                  label: StreamBuilder<int>(
+                                    stream: BidService.instance.bidCount(doc.id),
+                                    builder: (context, s) {
+                                      final n = s.data ?? 0;
+                                      return Text(n == 0
+                                          ? 'View / place bids'
+                                          : 'View bids (\)');
+                                    },
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: const Color(0xFF047857),
+                                    side: const BorderSide(
+                                        color: Color(0xFF34D399)),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                  ),
+                                ),
                               ),
                               const Divider(height: 25),
                               Row(
