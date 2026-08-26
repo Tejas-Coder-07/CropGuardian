@@ -1,5 +1,6 @@
 import 'package:crop_guardian/Authentication/login_screen.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/viewmodels/diagnosis_viewmodel.dart';
+import 'package:crop_guardian/core/user/role_controller.dart';
 import 'package:crop_guardian/firebase_options.dart';
 import 'package:crop_guardian/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +19,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await LanguageController.instance.load();
+  await RoleController.instance.load();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown

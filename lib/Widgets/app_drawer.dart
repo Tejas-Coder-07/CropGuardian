@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:crop_guardian/l10n/app_localizations.dart';
+import 'package:crop_guardian/Widgets/role_picker_sheet.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
 import 'package:crop_guardian/Screens/expenses/expense_tracker_screen.dart';
 import 'package:crop_guardian/Screens/advisory/crop_advisory_screen.dart';
@@ -129,6 +130,14 @@ class AppDrawer extends StatelessWidget {
                         icon: Icons.language,
                         index: 8,
                         onTap: () => LanguagePickerSheet.show(context),
+                      ),
+                      _buildGradientTile(
+                        context,
+                        title: "Buyer / Seller",
+                        hindi: "खरीदार / विक्रेता",
+                        icon: Icons.swap_horiz,
+                        index: 9,
+                        onTap: () => RolePickerSheet.show(context),
                       ),
                     ],
                   ),
