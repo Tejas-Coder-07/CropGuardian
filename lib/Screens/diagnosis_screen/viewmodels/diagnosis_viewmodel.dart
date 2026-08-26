@@ -122,6 +122,7 @@ class DiagnosisViewModel extends ChangeNotifier {
       imageFile: _selectedImage!,
       description: _description,
       forceCloud: forceCloud,
+      language: _selectedLanguage,
     );
 
     _source = result.source;

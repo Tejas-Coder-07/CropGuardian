@@ -45,6 +45,7 @@ class HybridDiagnosisService {
     required File imageFile,
     String? description,
     bool forceCloud = false,
+    String language = 'English',
   }) async {
     OfflinePrediction? prediction;
 
@@ -79,7 +80,7 @@ class HybridDiagnosisService {
 
     // Not confident (or forced) -> escalate to cloud Gemini.
     try {
-      final text = await _gemini.analyzeImage(imageFile, description);
+      final text = await _gemini.analyzeImage(imageFile, description, language: language);
       final parsed = _gemini.parseDiagnosisResponse(text);
 
       final id = await _saveLocal(
