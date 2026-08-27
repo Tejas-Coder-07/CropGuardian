@@ -30,6 +30,9 @@ class _GovernmentSchemesPageState extends State<GovernmentSchemesPage> {
 
   final _controller = TextEditingController();
   SchemeAnswer? _answer;
+  Map<String, dynamic>? _agentAnswer;
+  String? _agentSession;
+  bool _quickMode = true;
   String? _state;
   bool _loading = false;
   String _error = '';
@@ -48,7 +51,21 @@ class _GovernmentSchemesPageState extends State<GovernmentSchemesPage> {
   Future<void> _search(String q) async {
     if (q.trim().isEmpty) return;
     FocusScope.of(context).unfocus();
-    setState(() { _loading = true; _error = ''; _answer = null; });
+    setState(() { _loading = true; _error = ''; _answer = null; _agentAnswer = null; });
+
+    if (_quickMode) {
+      final a = await ApiClient.instance.askAgent(q, sessionId: _agentSession);
+      if (!mounted) return;
+      setState(() {
+        _agentAnswer = a;
+        _agentSession = a?['session_id'] as String?;
+        _loading = false;
+        if (a == null) {
+          _error = 'Could not reach the assistant. Try Official sources instead.';
+        }
+      });
+      return;
+    }
 
     final a = await ApiClient.instance.searchSchemes(query: q, state: _state);
     if (!mounted) return;
@@ -77,6 +94,8 @@ class _GovernmentSchemesPageState extends State<GovernmentSchemesPage> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _modeToggle(),
+          const SizedBox(height: 12),
           _searchBox(),
           const SizedBox(height: 14),
           if (_answer == null && !_loading) _suggestionChips(),
@@ -86,12 +105,129 @@ class _GovernmentSchemesPageState extends State<GovernmentSchemesPage> {
               child: Center(child: CircularProgressIndicator()),
             ),
           if (_error.isNotEmpty) _errorBox(),
+          if (_agentAnswer != null) _agentCard(_agentAnswer!),
           if (_answer != null) ..._results(_answer!),
           const SizedBox(height: 30),
         ],
       ),
     );
   }
+
+  Widget _modeToggle() => Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() {
+                _quickMode = true;
+                _answer = null;
+                _error = '';
+              }),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 11),
+                decoration: BoxDecoration(
+                  color: _quickMode ? const Color(0xFF34D399) : Colors.white,
+                  borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(10)),
+                  border: Border.all(color: const Color(0xFFA7F3D0)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.bolt,
+                        size: 16,
+                        color: _quickMode
+                            ? const Color(0xFF022C22)
+                            : Colors.black54),
+                    const SizedBox(width: 6),
+                    Text('Quick answer',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight:
+                              _quickMode ? FontWeight.bold : FontWeight.normal,
+                          color: _quickMode
+                              ? const Color(0xFF022C22)
+                              : Colors.black87,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() {
+                _quickMode = false;
+                _agentAnswer = null;
+                _error = '';
+              }),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 11),
+                decoration: BoxDecoration(
+                  color: !_quickMode ? const Color(0xFF34D399) : Colors.white,
+                  borderRadius: const BorderRadius.horizontal(
+                      right: Radius.circular(10)),
+                  border: Border.all(color: const Color(0xFFA7F3D0)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.verified_outlined,
+                        size: 16,
+                        color: !_quickMode
+                            ? const Color(0xFF022C22)
+                            : Colors.black54),
+                    const SizedBox(width: 6),
+                    Text('Official sources',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight:
+                              !_quickMode ? FontWeight.bold : FontWeight.normal,
+                          color: !_quickMode
+                              ? const Color(0xFF022C22)
+                              : Colors.black87,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _agentCard(Map<String, dynamic> a) => Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: const Color(0xFF022C22),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.support_agent, size: 16, color: Color(0xFF34D399)),
+                SizedBox(width: 8),
+                Text('KISAN ASSISTANT',
+                    style: TextStyle(
+                        color: Color(0xFF34D399),
+                        fontSize: 11,
+                        letterSpacing: 0.8,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              (a['answer'] ?? '').toString().replaceAll('**', ''),
+              style: const TextStyle(
+                  color: Colors.white, fontSize: 14, height: 1.55),
+            ),
+            const SizedBox(height: 14),
+            Text(a['disclaimer'] ?? '',
+                style: const TextStyle(
+                    color: Color(0xFFA7F3D0), fontSize: 11.5, height: 1.4)),
+          ],
+        ),
+      );
 
   Widget _searchBox() => Container(
         decoration: BoxDecoration(

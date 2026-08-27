@@ -179,6 +179,29 @@ class ApiClient {
   Future<Map<String, dynamic>?> rawGet(String path, Map<String, String> params) =>
       _get(path, params);
 
+  /// Asks the deployed Lyzr scheme agent. Returns null on any failure so the
+  /// caller can fall back to the Tavily search tab.
+  Future<Map<String, dynamic>?> askAgent(String message, {String? sessionId}) async {
+    try {
+      final resp = await http
+          .post(
+            Uri.parse('$_base/api/v1/agent/ask'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'message': message,
+              if (sessionId != null) 'session_id': sessionId,
+            }),
+          )
+          .timeout(_timeout);
+      if (resp.statusCode == 200) {
+        return jsonDecode(resp.body) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<bool> isReachable() async {
     final j = await _get('/health', {});
     return j != null;
