@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../core/ml/offline_classifier.dart';
+import '../../../core/language/language_controller.dart';
 import '../models/diagnosis_model.dart';
 import '../services/hybrid_diagnosis_service.dart';
 import '../services/tts_service.dart';
@@ -18,7 +19,7 @@ class DiagnosisViewModel extends ChangeNotifier {
 
   File? _selectedImage;
   String _description = '';
-  String _selectedLanguage = 'English';
+  String _selectedLanguage = LanguageController.instance.englishName;
   DiagnosisModel? _diagnosis;
   OfflinePrediction? _offlineResult;
   DiagnosisSource? _source;
@@ -92,6 +93,12 @@ class DiagnosisViewModel extends ChangeNotifier {
   }
 
   void setLanguage(String language) {
+    final code = switch (language) {
+      'Hindi' => 'hi',
+      'Kannada' => 'kn',
+      _ => 'en',
+    };
+    LanguageController.instance.setLanguage(code);
     _selectedLanguage = language;
     _ttsService.setLanguage(language);
     notifyListeners();
