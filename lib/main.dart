@@ -19,9 +19,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await LanguageController.instance.load();
-  await RoleController.instance.load();
-  await AccessibilityController.instance.load();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -30,14 +27,41 @@ void main() async{
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
     );
-    AlertService.instance.init();
+    // Load after Firebase - RoleController reads FirebaseAuth.
+    // Each is guarded so one failing service cannot block startup.
+    try { await LanguageController.instance.load(); } catch (_) {}
+    try { await RoleController.instance.load(); } catch (_) {}
+    try { await AccessibilityController.instance.load(); } catch (_) {}
+    try { AlertService.instance.init(); } catch (_) {}
     runApp(
         ChangeNotifierProvider(
           create: (_) => DiagnosisViewModel(
           ),
           child: const MyApp(),));
   }catch(e){
-   SnackBar(content: Text("Firebase initialization error :$e"),);
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.cloud_off, size: 48, color: Colors.orange),
+                const SizedBox(height: 16),
+                const Text('Could not start Crop Guardian',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 8),
+                Text(e.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, color: Colors.black54)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
   }
 }
 
