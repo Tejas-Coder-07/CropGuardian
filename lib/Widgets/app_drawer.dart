@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:crop_guardian/core/user/role_controller.dart';
 import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/Widgets/role_picker_sheet.dart';
 import 'package:crop_guardian/Screens/weather/weather_advisory_screen.dart';
@@ -150,8 +151,9 @@ class AppDrawer extends StatelessWidget {
                         index: 10,
                         onTap: () => AccessibilitySheet.show(context),
                       ),
-                      _buildGradientTile(
-                        context,
+                      if (RoleController.instance.isAdmin)
+                        _buildGradientTile(
+                          context,
                         title: "Admin Panel",
                         hindi: "व्यवस्थापक",
                         icon: Icons.admin_panel_settings_outlined,

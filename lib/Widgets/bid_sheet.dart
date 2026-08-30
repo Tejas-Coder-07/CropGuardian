@@ -116,7 +116,7 @@ class _BidSheetState extends State<BidSheet> {
             Text('Asking Rs ${widget.askingPrice.toStringAsFixed(0)}',
                 style: const TextStyle(fontSize: 13, color: Colors.black54)),
             const SizedBox(height: 16),
-            if (!_isOwnListing && RoleController.instance.isBuyer) _bidInput(),
+            if (!_isOwnListing) _bidInput(),
             if (_isOwnListing)
               Container(
                 padding: const EdgeInsets.all(12),
@@ -130,25 +130,6 @@ class _BidSheetState extends State<BidSheet> {
                     SizedBox(width: 10),
                     Expanded(
                       child: Text('This is your listing. Bids appear below.',
-                          style: TextStyle(fontSize: 13)),
-                    ),
-                  ],
-                ),
-              ),
-            if (!_isOwnListing && RoleController.instance.isFarmer)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.swap_horiz, size: 17, color: Colors.orange),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                          'Switch to Buyer in the menu to place a bid.',
                           style: TextStyle(fontSize: 13)),
                     ),
                   ],

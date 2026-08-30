@@ -22,6 +22,12 @@ class RoleController extends ChangeNotifier {
   UserRole _role = UserRole.farmer;
   UserRole get role => _role;
 
+  /// Admin tooling is hidden entirely unless the account is flagged.
+  /// Firestore rules enforce this too - the UI check is so a normal farmer
+  /// never sees a menu item they cannot use.
+  bool _isAdmin = false;
+  bool get isAdmin => _isAdmin;
+
   bool get isFarmer => _role == UserRole.farmer;
   bool get isBuyer => _role == UserRole.buyer;
 
@@ -42,6 +48,7 @@ class RoleController extends ChangeNotifier {
     try {
       final doc =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      _isAdmin = doc.data()?['isAdmin'] == true;
       final remote = doc.data()?['role'] as String?;
       if (remote != null) {
         _role = remote == 'buyer' ? UserRole.buyer : UserRole.farmer;
