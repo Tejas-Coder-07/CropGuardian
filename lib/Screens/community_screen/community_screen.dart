@@ -32,9 +32,34 @@ class CommunityScreen extends StatelessWidget {
           elevation: 2,
         ),
         body: Obx(() {
-          if (controller.posts.isEmpty) {
+          if (controller.feedLoading.value) {
             return const Center(
               child: CircularProgressIndicator(color: Colors.green),
+            );
+          }
+          if (controller.posts.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.forum_outlined,
+                        size: 48, color: Colors.green.shade200),
+                    const SizedBox(height: 16),
+                    const Text('No posts yet',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Be the first to share what is happening on your farm.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13, color: Colors.black54, height: 1.5),
+                    ),
+                  ],
+                ),
+              ),
             );
           }
           return ListView.builder(

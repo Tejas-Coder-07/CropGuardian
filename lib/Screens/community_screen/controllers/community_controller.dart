@@ -14,6 +14,10 @@ class CommunityController extends GetxController {
   var posts = <PostModel>[].obs;
   var isLoading = false.obs;
 
+  /// True until the first Firestore snapshot arrives. An empty feed is a
+  /// valid state, so emptiness alone must not mean 'still loading'.
+  var feedLoading = true.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -21,6 +25,11 @@ class CommunityController extends GetxController {
   }
 
   void _listenToPosts() {
+    _db.collection("community_posts").limit(1).get().then(
+      (_) => feedLoading.value = false,
+      onError: (_) => feedLoading.value = false,
+    );
+
     posts.bindStream(_db.collection("community_posts")
         .orderBy("createdAt", descending: true)
         .snapshots()
