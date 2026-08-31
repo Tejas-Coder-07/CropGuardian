@@ -12,6 +12,8 @@ import httpx
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
+from app.services.crop_conditions import assess, supported_crops
+
 router = APIRouter()
 
 OWM_KEY = os.getenv("OPENWEATHER_API_KEY", "")
@@ -33,6 +35,7 @@ class WeatherAdvisory(BaseModel):
     rainfall_mm: float
     conditions: str
     risks: List[DiseaseRisk]
+    crop_conditions: Optional[dict] = None
     irrigation_advice: str
     disclaimer: str = (
         "Guidance is indicative. Confirm chemical use with your local agriculture officer."
@@ -117,5 +120,6 @@ async def weather_advisory(
         rainfall_mm=rain,
         conditions=conditions,
         risks=_risk_for(temp, humidity, crop),
+        crop_conditions=assess(crop, temp, humidity),
         irrigation_advice=_irrigation(temp, humidity, rain),
     )
