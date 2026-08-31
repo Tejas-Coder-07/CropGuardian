@@ -1,4 +1,5 @@
 // Crop Guardian - live market prices
+import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 //
@@ -83,10 +84,10 @@ class _MarketPricesPageState extends State<MarketPricesPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF166534),
         foregroundColor: Colors.white,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Market Prices', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('मंडी भाव', style: TextStyle(fontSize: 13)),
+            Text(AppLocalizations.of(context).marketPrices,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
         centerTitle: true,
@@ -191,7 +192,7 @@ class _MarketPricesPageState extends State<MarketPricesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('TODAY\u0027S PRICE',
+              Text(AppLocalizations.of(context).todaysPrice,
                   style: TextStyle(fontSize: 11, letterSpacing: 0.8, color: Colors.black54)),
               const SizedBox(height: 8),
               Row(
@@ -202,7 +203,8 @@ class _MarketPricesPageState extends State<MarketPricesPage> {
                       style: const TextStyle(
                           fontSize: 38, fontWeight: FontWeight.bold, color: Color(0xFF022C22))),
                   const SizedBox(width: 6),
-                  const Text('/ kg', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                  Text(AppLocalizations.of(context).perKg,
+                      style: const TextStyle(fontSize: 16, color: Colors.black54)),
                 ],
               ),
               Text('₹${p.currentPrice.toStringAsFixed(0)} per quintal (100 kg)',
@@ -267,7 +269,7 @@ class _MarketPricesPageState extends State<MarketPricesPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Last 7 days',
+          Text(AppLocalizations.of(context).lastSevenDays,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           const SizedBox(height: 12),
           ...last.map((h) {
@@ -315,7 +317,9 @@ class _MarketPricesPageState extends State<MarketPricesPage> {
           ElevatedButton.icon(
             onPressed: needsLocation ? _setLocation : _fetch,
             icon: Icon(needsLocation ? Icons.my_location : Icons.refresh),
-            label: Text(needsLocation ? 'Use my location' : 'Retry'),
+            label: Text(needsLocation
+                ? AppLocalizations.of(context).useMyLocation
+                : AppLocalizations.of(context).retry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF166534),
               foregroundColor: Colors.white,
