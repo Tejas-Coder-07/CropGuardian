@@ -107,6 +107,10 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
             else if (_data != null) ...[
               _currentWeather(_data!),
               const SizedBox(height: 16),
+              if (_data!.cropConditions != null) ...[
+                _conditionsCard(_data!.cropConditions!),
+                const SizedBox(height: 16),
+              ],
               _risksSection(_data!),
               const SizedBox(height: 16),
               _irrigationCard(_data!),
@@ -212,6 +216,114 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
           ),
         ],
       );
+
+  Widget _conditionsCard(Map<String, dynamic> c) {
+    final readings = (c['readings'] as List? ?? []);
+    final allIdeal = c['all_ideal'] == true;
+    final watch = (c['watch_for'] as List? ?? []);
+    final prevent = (c['preventive'] as List? ?? []);
+
+    Color statusColor(String s) => switch (s) {
+          'ideal' => const Color(0xFF047857),
+          'above' => Colors.orange.shade700,
+          _ => Colors.blue.shade700,
+        };
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: allIdeal ? const Color(0xFF34D399) : Colors.orange.shade200,
+          width: 1.4,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(allIdeal ? Icons.check_circle_outline : Icons.info_outline,
+                  size: 18,
+                  color: allIdeal
+                      ? const Color(0xFF047857)
+                      : Colors.orange.shade700),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(c['summary'] ?? '',
+                    style: const TextStyle(
+                        fontSize: 13.5, fontWeight: FontWeight.w600, height: 1.35)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ...readings.map((r) {
+            final status = r['status'] as String;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: statusColor(status),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(r['detail'] ?? '',
+                        style: const TextStyle(fontSize: 12.5, height: 1.4)),
+                  ),
+                ],
+              ),
+            );
+          }),
+          if (watch.isNotEmpty) ...[
+            const Divider(height: 20),
+            const Text('Watch for',
+                style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 7),
+            ...watch.map((w) => Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text('- ' + w.toString(),
+                      style: const TextStyle(fontSize: 12.5, height: 1.35)),
+                )),
+          ],
+          if (prevent.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Good practice now',
+                      style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF047857))),
+                  const SizedBox(height: 7),
+                  ...prevent.map((p) => Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text('- ' + p.toString(),
+                            style: const TextStyle(fontSize: 12.5, height: 1.35)),
+                      )),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 
   Widget _risksSection(WeatherAdvisory w) {
     if (w.risks.isEmpty) {

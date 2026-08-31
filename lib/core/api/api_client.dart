@@ -69,6 +69,7 @@ class WeatherAdvisory {
   final double rainfallMm;
   final String conditions;
   final List<DiseaseRisk> risks;
+  final Map<String, dynamic>? cropConditions;
   final String irrigationAdvice;
   final String disclaimer;
 
@@ -81,6 +82,7 @@ class WeatherAdvisory {
         risks = (j['risks'] as List? ?? [])
             .map((r) => DiseaseRisk.fromJson(r))
             .toList(),
+        cropConditions = j['crop_conditions'] as Map<String, dynamic>?,
         irrigationAdvice = j['irrigation_advice'] ?? '',
         disclaimer = j['disclaimer'] ?? '';
 }
