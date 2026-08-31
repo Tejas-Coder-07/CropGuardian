@@ -1,4 +1,5 @@
 import 'package:crop_guardian/Screens/diagnosis_screen/viewmodels/diagnosis_viewmodel.dart';
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/widgets/image_picker_card.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/widgets/language_selector.dart';
 import 'package:crop_guardian/responsive_page.dart';
@@ -25,11 +26,11 @@ class DiagnosisScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 25.0),
               child: Column(
                 children: [
-                  const Text(
-                    "AI Crop Diagnose",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  Text(
+                    AppLocalizations.of(context).aiDiagnosis,
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  const Text("एआई-फसल निदान", style: TextStyle(color: Colors.white70, fontSize: 18)),
+                  const SizedBox(height: 8),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -67,8 +68,8 @@ class DiagnosisScreen extends StatelessWidget {
                                     Expanded(
                                       child: TextField(
                                         controller: viewModel.descriptionController,
-                                        decoration: const InputDecoration(
-                                          hintText: 'Describe crop issue (optional)',
+                                        decoration: InputDecoration(
+                                          hintText: AppLocalizations.of(context).describeCropIssue,
                                           border: InputBorder.none,
                                           contentPadding: EdgeInsets.all(16),
                                         ),
@@ -122,8 +123,8 @@ class DiagnosisScreen extends StatelessWidget {
                                     strokeWidth: 2,
                                   ),
                                 )
-                                    : const Text(
-                                  'Diagnose Crop',
+                                    : Text(
+                                  AppLocalizations.of(context).diagnoseCrop,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -253,8 +254,8 @@ class DiagnosisScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             healthy
-                ? 'No disease detected. Keep monitoring your crop regularly.'
-                : 'Detected offline in under a second, with no internet connection.',
+                ? AppLocalizations.of(context).noDiseaseRisk
+                : AppLocalizations.of(context).detectedOffline,
             style: const TextStyle(fontSize: 13, color: Colors.black54, height: 1.4),
           ),
           if (lowConfidence) ...[
@@ -265,8 +266,8 @@ class DiagnosisScreen extends StatelessWidget {
                 color: Colors.orange.shade50,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Text(
-                'I am not fully sure about this one. Connect to the internet and ask the expert model for a detailed answer.',
+              child: Text(
+                AppLocalizations.of(context).notFullySure,
                 style: TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
               ),
             ),
@@ -283,7 +284,9 @@ class DiagnosisScreen extends StatelessWidget {
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.cloud_outlined, size: 18),
               label: Text(
-                  vm.isEscalating ? 'Asking expert model...' : 'Ask expert model'),
+                  vm.isEscalating
+                      ? AppLocalizations.of(context).askingExpertModel
+                      : AppLocalizations.of(context).askExpertModel),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF047857),
                 side: const BorderSide(color: Color(0xFF34D399)),
@@ -305,7 +308,7 @@ class DiagnosisScreen extends StatelessWidget {
               ],
             )
           else ...[
-            const Text('Was this correct?',
+            Text(AppLocalizations.of(context).wasThisCorrect,
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
             const SizedBox(height: 10),
             Row(
@@ -314,7 +317,7 @@ class DiagnosisScreen extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () => vm.submitFeedback(),
                     icon: const Icon(Icons.thumb_up_outlined, size: 16),
-                    label: const Text('Correct'),
+                    label: Text(AppLocalizations.of(context).correct),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.green.shade700,
                       side: BorderSide(color: Colors.green.shade300),
@@ -326,7 +329,7 @@ class DiagnosisScreen extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () => _askCorrection(context, vm),
                     icon: const Icon(Icons.thumb_down_outlined, size: 16),
-                    label: const Text('Wrong'),
+                    label: Text(AppLocalizations.of(context).wrong),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red.shade700,
                       side: BorderSide(color: Colors.red.shade200),
@@ -346,7 +349,7 @@ class DiagnosisScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('What is it actually?'),
+        title: Text(AppLocalizations.of(context).whatIsItActually),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(
@@ -356,13 +359,14 @@ class DiagnosisScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(AppLocalizations.of(context).cancel)),
           ElevatedButton(
             onPressed: () {
               vm.submitFeedback(correctedLabel: controller.text.trim());
               Navigator.pop(ctx);
             },
-            child: const Text('Submit'),
+            child: Text(AppLocalizations.of(context).submit),
           ),
         ],
       ),
