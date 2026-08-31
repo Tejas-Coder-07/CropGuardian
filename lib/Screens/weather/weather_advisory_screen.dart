@@ -1,4 +1,5 @@
 // Crop Guardian - weather and disease risk advisory
+import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 //
@@ -77,10 +78,10 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
         backgroundColor: const Color(0xFF166534),
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Weather Advisory', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('मौसम सलाह', style: TextStyle(fontSize: 13)),
+            Text(AppLocalizations.of(context).weatherAdvisory,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
         actions: [
@@ -285,7 +286,7 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
           }),
           if (watch.isNotEmpty) ...[
             const Divider(height: 20),
-            const Text('Watch for',
+            Text(AppLocalizations.of(context).watchOutFor,
                 style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold)),
             const SizedBox(height: 7),
             ...watch.map((w) => Padding(
@@ -352,7 +353,7 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Disease risk from current weather',
+        Text(AppLocalizations.of(context).diseaseRiskWeather,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 10),
         ...w.risks.map((r) => Container(
@@ -441,7 +442,7 @@ class _WeatherAdvisoryScreenState extends State<WeatherAdvisoryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Irrigation advice',
+                  Text(AppLocalizations.of(context).irrigationAdvice,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 5),
                   Text(w.irrigationAdvice,
