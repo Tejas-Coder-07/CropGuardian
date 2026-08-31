@@ -1,4 +1,5 @@
 // Crop Guardian - farm expense tracker
+import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 //
@@ -90,10 +91,10 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         backgroundColor: const Color(0xFF166534),
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Farm Expenses', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('खर्च रिकॉर्ड', style: TextStyle(fontSize: 13)),
+            Text(AppLocalizations.of(context).farmExpenses,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -102,7 +103,8 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         backgroundColor: const Color(0xFF34D399),
         foregroundColor: const Color(0xFF022C22),
         icon: const Icon(Icons.add),
-        label: const Text('Add expense', style: TextStyle(fontWeight: FontWeight.bold)),
+        label: Text(AppLocalizations.of(context).addExpense,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -118,7 +120,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
                 if (_expenses.isEmpty)
                   _emptyState()
                 else ...[
-                  const Text('Recent',
+                  Text(AppLocalizations.of(context).recent,
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   const SizedBox(height: 10),
                   ..._expenses.map(_expenseTile),
@@ -137,7 +139,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('TOTAL SPENT',
+            Text(AppLocalizations.of(context).totalSpent,
                 style: TextStyle(
                     color: Color(0xFF34D399), fontSize: 11, letterSpacing: 0.8)),
             const SizedBox(height: 8),
@@ -169,7 +171,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Where the money went',
+          Text(AppLocalizations.of(context).whereMoneyWent,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           const SizedBox(height: 14),
           ...entries.map((e) {
@@ -262,7 +264,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
           children: [
             Icon(Icons.receipt_long_outlined, size: 46, color: Colors.green.shade200),
             const SizedBox(height: 14),
-            const Text('No expenses recorded yet',
+            Text(AppLocalizations.of(context).noExpensesYet,
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
             const SizedBox(height: 6),
             const Text(
@@ -331,7 +333,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               ),
             ),
             const SizedBox(height: 18),
-            const Text('Add expense',
+            Text(AppLocalizations.of(context).addExpense,
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
             const SizedBox(height: 18),
             TextField(
@@ -346,7 +348,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Category', style: TextStyle(fontSize: 13, color: Colors.black54)),
+            Text(AppLocalizations.of(context).category,
+                style: const TextStyle(fontSize: 13, color: Colors.black54)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -364,8 +367,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             const SizedBox(height: 16),
             TextField(
               controller: _note,
-              decoration: const InputDecoration(
-                labelText: 'Note (optional)',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).noteOptional,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -399,7 +402,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(AppLocalizations.of(context).save,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
             const SizedBox(height: 10),
