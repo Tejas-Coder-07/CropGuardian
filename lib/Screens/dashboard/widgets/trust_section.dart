@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class TrustSection extends StatelessWidget {
@@ -10,10 +11,10 @@ class TrustSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 16),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 16),
             child: Text(
-              "Why Farmers Trust Us",
+              AppLocalizations.of(context).whyFarmersTrustUs,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

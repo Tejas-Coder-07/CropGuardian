@@ -244,4 +244,43 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noConnection => 'इंटरनेट नहीं है। सहेजा गया डेटा दिखा रहे हैं।';
+
+  @override
+  String get powerfulFeatures => 'मुख्य सुविधाएं';
+
+  @override
+  String get startAiDiagnosis => 'एआई जांच शुरू करें';
+
+  @override
+  String get joinCommunity => 'समुदाय से जुड़ें';
+
+  @override
+  String get whyFarmersTrustUs => 'किसान हम पर भरोसा क्यों करते हैं';
+
+  @override
+  String get diagnosisDesc => 'तुरंत रोग और कीट की पहचान, 96% सटीक।';
+
+  @override
+  String get communityDesc => 'दूसरे किसानों से जुड़ें और अनुभव साझा करें।';
+
+  @override
+  String get resourceDesc => 'सरकारी योजनाएं और मंडी भाव अपनी भाषा में देखें।';
+
+  @override
+  String get organicDesc => 'टिकाऊ खेती के लिए जैविक उपचार योजनाएं।';
+
+  @override
+  String get marketDesc => 'सत्यापित स्थानीय खेतों से सीधे बीज और उपज खरीदें।';
+
+  @override
+  String get heroTagline => 'फसल रोग की जांच और विशेषज्ञ सलाह, आपकी भाषा में।';
+
+  @override
+  String get resourceLibrary => 'संसाधन केंद्र';
+
+  @override
+  String get organicSolutions => 'जैविक उपाय';
+
+  @override
+  String get marketPlace => 'बाज़ार';
 }

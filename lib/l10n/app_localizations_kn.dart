@@ -245,4 +245,45 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get noConnection => 'ಇಂಟರ್ನೆಟ್ ಇಲ್ಲ. ಉಳಿಸಿದ ಮಾಹಿತಿ ತೋರಿಸುತ್ತಿದೆ.';
+
+  @override
+  String get powerfulFeatures => 'ಪ್ರಮುಖ ಸೌಲಭ್ಯಗಳು';
+
+  @override
+  String get startAiDiagnosis => 'ಎಐ ಪರೀಕ್ಷೆ ಪ್ರಾರಂಭಿಸಿ';
+
+  @override
+  String get joinCommunity => 'ಸಮುದಾಯ ಸೇರಿ';
+
+  @override
+  String get whyFarmersTrustUs => 'ರೈತರು ನಮ್ಮನ್ನು ಏಕೆ ನಂಬುತ್ತಾರೆ';
+
+  @override
+  String get diagnosisDesc => 'ತಕ್ಷಣ ರೋಗ ಮತ್ತು ಕೀಟ ಗುರುತಿಸುವಿಕೆ, 96% ನಿಖರ.';
+
+  @override
+  String get communityDesc => 'ಇತರ ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಿ ಅನುಭವ ಹಂಚಿಕೊಳ್ಳಿ.';
+
+  @override
+  String get resourceDesc =>
+      'ಸರ್ಕಾರಿ ಯೋಜನೆ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ದರ ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.';
+
+  @override
+  String get organicDesc => 'ಸುಸ್ಥಿರ ಕೃಷಿಗಾಗಿ ಸಾವಯವ ಚಿಕಿತ್ಸಾ ಯೋಜನೆಗಳು.';
+
+  @override
+  String get marketDesc =>
+      'ಪರಿಶೀಲಿತ ಸ್ಥಳೀಯ ಕೃಷಿಯಿಂದ ನೇರವಾಗಿ ಬೀಜ ಮತ್ತು ಉತ್ಪನ್ನ ಖರೀದಿಸಿ.';
+
+  @override
+  String get heroTagline => 'ಬೆಳೆ ರೋಗ ಪತ್ತೆ ಮತ್ತು ತಜ್ಞ ಸಲಹೆ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.';
+
+  @override
+  String get resourceLibrary => 'ಸಂಪನ್ಮೂಲ ಕೇಂದ್ರ';
+
+  @override
+  String get organicSolutions => 'ಸಾವಯವ ಪರಿಹಾರ';
+
+  @override
+  String get marketPlace => 'ಮಾರುಕಟ್ಟೆ';
 }

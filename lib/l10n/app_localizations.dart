@@ -567,6 +567,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No connection. Showing saved data.'**
   String get noConnection;
+
+  /// No description provided for @powerfulFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Powerful Features'**
+  String get powerfulFeatures;
+
+  /// No description provided for @startAiDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'START AI DIAGNOSIS'**
+  String get startAiDiagnosis;
+
+  /// No description provided for @joinCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'JOIN COMMUNITY'**
+  String get joinCommunity;
+
+  /// No description provided for @whyFarmersTrustUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Why Farmers Trust Us'**
+  String get whyFarmersTrustUs;
+
+  /// No description provided for @diagnosisDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Instant disease and pest identification, 96% accurate.'**
+  String get diagnosisDesc;
+
+  /// No description provided for @communityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect with fellow farmers and share valuable experiences.'**
+  String get communityDesc;
+
+  /// No description provided for @resourceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Access government schemes and market prices in your language.'**
+  String get resourceDesc;
+
+  /// No description provided for @organicDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalised organic treatment plans for sustainable farming.'**
+  String get organicDesc;
+
+  /// No description provided for @marketDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy seeds and fresh produce directly from verified local farms.'**
+  String get marketDesc;
+
+  /// No description provided for @heroTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop disease diagnosis and expert guidance in your language.'**
+  String get heroTagline;
+
+  /// No description provided for @resourceLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource Library'**
+  String get resourceLibrary;
+
+  /// No description provided for @organicSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic Solutions'**
+  String get organicSolutions;
+
+  /// No description provided for @marketPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketplace'**
+  String get marketPlace;
 }
 
 class _AppLocalizationsDelegate

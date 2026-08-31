@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -91,14 +92,14 @@ class HeroSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 15),
-                const Text(
-                  "Intelligent crop disease diagnosis and expert guidance in your language.",
+                Text(
+                  AppLocalizations.of(context).heroTagline,
                   style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
                 ),
                 const SizedBox(height: 35),
-                _primaryButton(),
+                _primaryButton(context),
                 const SizedBox(height: 12),
-                _secondaryButton(),
+                _secondaryButton(context),
               ],
             ),
           ),
@@ -122,7 +123,7 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  Widget _primaryButton() {
+  Widget _primaryButton(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -138,7 +139,7 @@ class HeroSection extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () => Get.to(() => const DiagnosisScreen()),
         icon: const Icon(Icons.psychology_outlined, color: Colors.black),
-        label: const Text("START AI DIAGNOSIS", style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
+        label: Text(AppLocalizations.of(context).startAiDiagnosis, style: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1)),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFC6FF00),
           foregroundColor: Colors.black,
@@ -149,7 +150,7 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  Widget _secondaryButton() {
+  Widget _secondaryButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
@@ -160,7 +161,7 @@ class HeroSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         ),
-        child: const Text("JOIN COMMUNITY / समुदाय", style: TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(AppLocalizations.of(context).joinCommunity, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
     );
   }

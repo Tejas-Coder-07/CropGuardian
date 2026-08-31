@@ -77,5 +77,18 @@
   "modelAccuracy": "Model accuracy",
   "farmerRated": "Farmer rated",
   "loading": "Loading...",
-  "noConnection": "No connection. Showing saved data."
+  "noConnection": "No connection. Showing saved data.",
+  "powerfulFeatures": "Powerful Features",
+  "startAiDiagnosis": "START AI DIAGNOSIS",
+  "joinCommunity": "JOIN COMMUNITY",
+  "whyFarmersTrustUs": "Why Farmers Trust Us",
+  "diagnosisDesc": "Instant disease and pest identification, 96% accurate.",
+  "communityDesc": "Connect with fellow farmers and share valuable experiences.",
+  "resourceDesc": "Access government schemes and market prices in your language.",
+  "organicDesc": "Personalised organic treatment plans for sustainable farming.",
+  "marketDesc": "Buy seeds and fresh produce directly from verified local farms.",
+  "heroTagline": "Crop disease diagnosis and expert guidance in your language.",
+  "resourceLibrary": "Resource Library",
+  "organicSolutions": "Organic Solutions",
+  "marketPlace": "Marketplace"
 }

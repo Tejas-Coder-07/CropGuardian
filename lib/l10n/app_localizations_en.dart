@@ -245,4 +245,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noConnection => 'No connection. Showing saved data.';
+
+  @override
+  String get powerfulFeatures => 'Powerful Features';
+
+  @override
+  String get startAiDiagnosis => 'START AI DIAGNOSIS';
+
+  @override
+  String get joinCommunity => 'JOIN COMMUNITY';
+
+  @override
+  String get whyFarmersTrustUs => 'Why Farmers Trust Us';
+
+  @override
+  String get diagnosisDesc =>
+      'Instant disease and pest identification, 96% accurate.';
+
+  @override
+  String get communityDesc =>
+      'Connect with fellow farmers and share valuable experiences.';
+
+  @override
+  String get resourceDesc =>
+      'Access government schemes and market prices in your language.';
+
+  @override
+  String get organicDesc =>
+      'Personalised organic treatment plans for sustainable farming.';
+
+  @override
+  String get marketDesc =>
+      'Buy seeds and fresh produce directly from verified local farms.';
+
+  @override
+  String get heroTagline =>
+      'Crop disease diagnosis and expert guidance in your language.';
+
+  @override
+  String get resourceLibrary => 'Resource Library';
+
+  @override
+  String get organicSolutions => 'Organic Solutions';
+
+  @override
+  String get marketPlace => 'Marketplace';
 }

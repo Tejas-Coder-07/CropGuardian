@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/Screens/Sells_Screen/market_feed_screen.dart';
 import 'package:crop_guardian/Screens/Sells_Screen/sell_item_screen.dart';
 import 'package:crop_guardian/Screens/community_screen/community_screen.dart';
@@ -17,8 +18,8 @@ class FeatureSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Elegant Header with Dual Language
-          const Text(
-            "Powerful Features",
+          Text(
+            AppLocalizations.of(context).powerfulFeatures,
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w900,
@@ -42,9 +43,9 @@ class FeatureSection extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>DiagnosisScreen()));
             },
             child: _buildMultiColorCard(
-              title: "AI Crop Diagnosis",
+              title: AppLocalizations.of(context).aiDiagnosis,
               hindiTitle: "एआई फसल निदान",
-              description: "Instant disease and pest identification with 85% accuracy.",
+              description: AppLocalizations.of(context).diagnosisDesc,
               icon: Icons.auto_awesome_rounded,
               // Gradient: Deep Green to Lime
               gradientColors: [const Color(0xFF1B5E20), const Color(0xFF4CAF50)],
@@ -57,9 +58,9 @@ class FeatureSection extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>CommunityScreen()));
             },
             child: _buildMultiColorCard(
-              title: "Community Support",
+              title: AppLocalizations.of(context).community,
               hindiTitle: "सामुदायिक सहायता",
-              description: "Connect with fellow farmers and share valuable experiences.",
+              description: AppLocalizations.of(context).communityDesc,
               icon: Icons.groups_3_rounded,
               // Gradient: Deep Orange to Amber
               gradientColors: [const Color(0xFFE65100), const Color(0xFFFFB300)],
@@ -72,9 +73,9 @@ class FeatureSection extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>ResourcesScreen()));
             },
             child: _buildMultiColorCard(
-              title: "Resource Library",
+              title: AppLocalizations.of(context).resourceLibrary,
               hindiTitle: "संसाधन पुस्तकालय",
-              description: "Access government schemes and market prices in your language.",
+              description: AppLocalizations.of(context).resourceDesc,
               icon: Icons.menu_book_rounded,
               // Gradient: Royal Blue to Sky Blue
               gradientColors: [const Color(0xFF0D47A1), const Color(0xFF42A5F5)],
@@ -89,9 +90,9 @@ class FeatureSection extends StatelessWidget {
             }
             ,
             child: _buildMultiColorCard(
-              title: "Organic Solutions",
+              title: AppLocalizations.of(context).organicSolutions,
               hindiTitle: "जैविक समाधान",
-              description: "Personalized organic treatment plans for sustainable farming.",
+              description: AppLocalizations.of(context).organicDesc,
               icon: Icons.eco_rounded,
               // Gradient: Teal to Mint
               gradientColors: [const Color(0xFF004D40), const Color(0xFF26A69A)],
@@ -103,9 +104,9 @@ class FeatureSection extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>MarketFeedScreen()));
             },
             child: _buildMultiColorCard(
-              title: "Market Place",
+              title: AppLocalizations.of(context).marketPlace,
               hindiTitle: "बाजार स्थान",
-              description: "Browse high-quality seeds and fresh produce directly from verified local farms.",
+              description: AppLocalizations.of(context).marketDesc,
               icon: Icons.menu_book_rounded,
               // Gradient: Royal Blue to Sky Blue
               gradientColors: [const Color(0xFF1A237E), const Color(0xFF2E7D32)],
