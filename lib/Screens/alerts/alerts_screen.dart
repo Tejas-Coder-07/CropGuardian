@@ -1,4 +1,5 @@
 // Crop Guardian - emergency alerts
+import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 
@@ -49,10 +50,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
         backgroundColor: const Color(0xFF166534),
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Emergency Alerts', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('आपातकालीन चेतावनी', style: TextStyle(fontSize: 13)),
+            Text(AppLocalizations.of(context).emergencyAlerts,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -189,7 +190,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
               Icon(Icons.notifications_none,
                   size: 50, color: Colors.green.shade200),
               const SizedBox(height: 16),
-              const Text('No alerts right now',
+              Text(AppLocalizations.of(context).noAlertsRightNow,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
               const SizedBox(height: 8),
               const Text(

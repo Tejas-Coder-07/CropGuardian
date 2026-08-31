@@ -1,4 +1,5 @@
 // Crop Guardian - crop advisory (fertiliser, soil health, season plan)
+import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 //
@@ -101,10 +102,10 @@ class _CropAdvisoryScreenState extends State<CropAdvisoryScreen> {
         backgroundColor: const Color(0xFF166534),
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Column(
+        title: Column(
           children: [
-            Text('Crop Advisory', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('फसल सलाह', style: TextStyle(fontSize: 13)),
+            Text(AppLocalizations.of(context).cropAdvisory,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -113,7 +114,7 @@ class _CropAdvisoryScreenState extends State<CropAdvisoryScreen> {
         children: [
           _modeTabs(),
           const SizedBox(height: 16),
-          const Text('Select crop',
+          Text(AppLocalizations.of(context).selectCrop,
               style: TextStyle(fontSize: 13, color: Colors.black54)),
           const SizedBox(height: 8),
           _cropChips(),
@@ -270,7 +271,7 @@ class _CropAdvisoryScreenState extends State<CropAdvisoryScreen> {
       }),
       if (warnings.isNotEmpty) ...[
         const SizedBox(height: 6),
-        const Text('Watch out for',
+        Text(AppLocalizations.of(context).watchOutFor,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 10),
         ...warnings.map((w) => Padding(
