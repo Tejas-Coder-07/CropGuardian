@@ -1,11 +1,14 @@
-// Crop Guardian - marketplace bidding
+// Crop Guardian - silent bidding
 // Author: Tejas S <tejus.sgowda07@gmail.com>
 // Team Maverick - Cambridge Institute of Engineering
 //
-// Bids are append-only: once placed, nobody can edit or withdraw one. The
-// highest bid is derived from the collection rather than stored on the
-// listing, so two buyers bidding at the same moment cannot overwrite each
-// other.
+// Sealed-bid auction. A buyer places one or more bids but cannot see anyone
+// else's amount, so nobody can simply outbid by a rupee at the last second.
+// When the seller's closing time passes, the highest bid wins and the result
+// becomes visible to both sides.
+//
+// Firestore rules enforce the secrecy - a buyer can only read their own bid
+// document. The UI is not the security boundary.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +28,7 @@ class Bid {
     required this.placedAt,
   });
 
-  factory Bid.fromDoc(QueryDocumentSnapshot doc) {
+  factory Bid.fromDoc(DocumentSnapshot doc) {
     final d = doc.data() as Map<String, dynamic>;
     return Bid(
       id: doc.id,
@@ -39,6 +42,29 @@ class Bid {
   bool get isMine => bidderId == FirebaseAuth.instance.currentUser?.uid;
 }
 
+class AuctionState {
+  final DateTime? closesAt;
+  final bool isOpen;
+  final Duration? remaining;
+  final int bidCount;
+
+  AuctionState({
+    required this.closesAt,
+    required this.isOpen,
+    required this.remaining,
+    required this.bidCount,
+  });
+
+  String get countdownLabel {
+    if (closesAt == null) return 'No closing time set';
+    if (!isOpen) return 'Bidding closed';
+    final r = remaining!;
+    if (r.inDays > 0) return 'Closes in ${r.inDays}d ${r.inHours % 24}h';
+    if (r.inHours > 0) return 'Closes in ${r.inHours}h ${r.inMinutes % 60}m';
+    return 'Closes in ${r.inMinutes}m';
+  }
+}
+
 class BidService {
   static final BidService instance = BidService._();
   BidService._();
@@ -48,55 +74,130 @@ class BidService {
   CollectionReference _bidsRef(String listingId) =>
       _db.collection('market_listings').doc(listingId).collection('bids');
 
-  /// Live bid list for a listing, highest first.
-  Stream<List<Bid>> bidStream(String listingId) => _bidsRef(listingId)
+  DocumentReference _listingRef(String listingId) =>
+      _db.collection('market_listings').doc(listingId);
+
+  /// Seller opens bidding by setting a closing time.
+  Future<String?> openAuction({
+    required String listingId,
+    required DateTime closesAt,
+    double? reservePrice,
+  }) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return 'Please log in first.';
+    if (closesAt.isBefore(DateTime.now())) {
+      return 'Closing time must be in the future.';
+    }
+
+    await _listingRef(listingId).set({
+      'biddingClosesAt': Timestamp.fromDate(closesAt),
+      'reservePrice': reservePrice,
+      'biddingOpenedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    return null;
+  }
+
+  /// Live auction status for a listing.
+  Stream<AuctionState> auctionState(String listingId) =>
+      _listingRef(listingId).snapshots().asyncMap((doc) async {
+        final d = doc.data() as Map<String, dynamic>?;
+        final ts = d?['biddingClosesAt'] as Timestamp?;
+        final closesAt = ts?.toDate();
+
+        final now = DateTime.now();
+        final isOpen = closesAt != null && closesAt.isAfter(now);
+
+        int count = 0;
+        try {
+          final snap = await _bidsRef(listingId).count().get();
+          count = snap.count ?? 0;
+        } catch (_) {
+          // A buyer cannot list bids - that is the point. Count stays hidden.
+        }
+
+        return AuctionState(
+          closesAt: closesAt,
+          isOpen: isOpen,
+          remaining: isOpen ? closesAt.difference(now) : null,
+          bidCount: count,
+        );
+      });
+
+  /// The current user's own bid, if they have placed one. Buyers see only this.
+  Stream<Bid?> myBid(String listingId) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return Stream.value(null);
+
+    return _bidsRef(listingId).doc(uid).snapshots().map(
+          (doc) => doc.exists ? Bid.fromDoc(doc) : null,
+        );
+  }
+
+  /// All bids, highest first. Only readable by the seller.
+  Stream<List<Bid>> allBids(String listingId) => _bidsRef(listingId)
       .orderBy('amount', descending: true)
-      .limit(50)
       .snapshots()
       .map((s) => s.docs.map(Bid.fromDoc).toList());
 
-  /// Highest bid so far, or null if none.
-  Future<Bid?> highestBid(String listingId) async {
-    final snap = await _bidsRef(listingId)
-        .orderBy('amount', descending: true)
-        .limit(1)
-        .get();
-    if (snap.docs.isEmpty) return null;
-    return Bid.fromDoc(snap.docs.first);
-  }
-
-  /// Places a bid. Rejects anything not above the current highest, so a buyer
-  /// cannot underbid by accident when the list is stale on screen.
+  /// Places or raises a sealed bid. The document id is the bidder uid, so a
+  /// buyer has exactly one live bid and raising replaces it.
   Future<String?> placeBid({
     required String listingId,
     required double amount,
     required String bidderName,
-    double? askingPrice,
   }) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return 'Please log in to place a bid.';
     if (amount <= 0) return 'Enter a valid amount.';
 
-    final highest = await highestBid(listingId);
+    final listing = await _listingRef(listingId).get();
+    final d = listing.data() as Map<String, dynamic>?;
 
-    if (highest != null && amount <= highest.amount) {
-      return 'Your bid must be higher than Rs ${highest.amount.toStringAsFixed(0)}.';
-    }
-    if (highest == null && askingPrice != null && amount < askingPrice * 0.5) {
-      return 'Bid is far below the asking price. Enter a serious offer.';
+    if (d?['sellerId'] == user.uid) {
+      return 'You cannot bid on your own listing.';
     }
 
-    await _bidsRef(listingId).add({
+    final ts = d?['biddingClosesAt'] as Timestamp?;
+    if (ts == null) return 'Bidding has not opened on this listing yet.';
+    if (ts.toDate().isBefore(DateTime.now())) return 'Bidding has closed.';
+
+    final existing = await _bidsRef(listingId).doc(user.uid).get();
+    if (existing.exists) {
+      final prev = (existing.data() as Map<String, dynamic>)['amount'] as num;
+      if (amount <= prev) {
+        return 'Your new bid must be higher than your current bid.';
+      }
+    }
+
+    await _bidsRef(listingId).doc(user.uid).set({
       'bidderId': user.uid,
       'bidderName': bidderName,
       'amount': amount,
       'placedAt': FieldValue.serverTimestamp(),
     });
 
-    return null; // success
+    return null;
   }
 
-  /// Bid count for a listing, for showing "3 bids" on the card.
-  Stream<int> bidCount(String listingId) =>
-      _bidsRef(listingId).snapshots().map((s) => s.docs.length);
+  /// Winner once bidding has closed. Returns null while still open.
+  Future<Bid?> winner(String listingId) async {
+    final listing = await _listingRef(listingId).get();
+    final d = listing.data() as Map<String, dynamic>?;
+    final ts = d?['biddingClosesAt'] as Timestamp?;
+
+    if (ts == null || ts.toDate().isAfter(DateTime.now())) return null;
+
+    final snap = await _bidsRef(listingId)
+        .orderBy('amount', descending: true)
+        .limit(1)
+        .get();
+    if (snap.docs.isEmpty) return null;
+
+    final top = Bid.fromDoc(snap.docs.first);
+    final reserve = (d?['reservePrice'] as num?)?.toDouble();
+    if (reserve != null && top.amount < reserve) return null;
+
+    return top;
+  }
 }

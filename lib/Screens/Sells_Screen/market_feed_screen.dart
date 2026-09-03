@@ -322,13 +322,18 @@ class _MarketFeedScreenState extends State<MarketFeedScreen> {
                                     sellerId: d['sellerId'] ?? '',
                                   ),
                                   icon: const Icon(Icons.gavel, size: 17),
-                                  label: StreamBuilder<int>(
-                                    stream: BidService.instance.bidCount(doc.id),
+                                  label: StreamBuilder<AuctionState>(
+                                    stream: BidService.instance
+                                        .auctionState(doc.id),
                                     builder: (context, s) {
-                                      final n = s.data ?? 0;
-                                      return Text(n == 0
-                                          ? 'View / place bids'
-                                          : 'View bids (\)');
+                                      final st = s.data;
+                                      if (st == null) {
+                                        return const Text('Bidding');
+                                      }
+                                      if (st.closesAt == null) {
+                                        return const Text('Bidding not open');
+                                      }
+                                      return Text(st.countdownLabel);
                                     },
                                   ),
                                   style: OutlinedButton.styleFrom(
