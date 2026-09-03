@@ -6,12 +6,34 @@ import '../../Widgets/app_drawer.dart';
 import 'widgets/feature_card.dart';
 import 'widgets/quick_access_grid.dart';
 import 'widgets/dashboard_footer.dart';
+import '../../core/location/location_service.dart';
 import 'widgets/hero_section.dart';
 import 'widgets/stats_row.dart';
 import 'widgets/trust_section.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _ensureLocation();
+  }
+
+  /// Asks for location once on first launch. Price, weather, alerts and
+  /// scheme results are all keyed off where the farm is, so without this
+  /// every one of those screens opens asking the farmer to set it manually.
+  Future<void> _ensureLocation() async {
+    final saved = await LocationService.instance.load();
+    if (saved != null) return;
+    await LocationService.instance.detectFromGps();
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {

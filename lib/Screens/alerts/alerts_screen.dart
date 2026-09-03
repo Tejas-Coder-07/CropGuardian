@@ -22,6 +22,14 @@ class _AlertsScreenState extends State<AlertsScreen> {
 
   /// Districts a farmer might watch beyond their own - family land, a market
   /// they sell into, or a region where an outbreak is spreading toward them.
+  /// States a farmer might watch as a whole - useful when family land is
+  /// elsewhere, or when an outbreak is moving through a neighbouring state.
+  static const _states = [
+    'Karnataka', 'Maharashtra', 'Tamil Nadu', 'Andhra Pradesh', 'Telangana',
+    'Kerala', 'Gujarat', 'Punjab', 'Haryana', 'Uttar Pradesh', 'Bihar',
+    'Madhya Pradesh', 'Rajasthan', 'West Bengal', 'Odisha', 'Assam',
+  ];
+
   static const _districts = [
     'Bengaluru Urban', 'Kolar', 'Chikkaballapur', 'Tumakuru', 'Mandya',
     'Mysuru', 'Hassan', 'Dharwad', 'Belagavi', 'Kalaburagi', 'Davanagere',
@@ -144,6 +152,32 @@ class _AlertsScreenState extends State<AlertsScreen> {
                     onTap: () => Navigator.pop(context, ''),
                   ),
                   const Divider(height: 1),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 6),
+                    child: Text('States',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54)),
+                  ),
+                  ..._states.map((s) => ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.map_outlined, size: 20),
+                        title: Text(s),
+                        trailing: _watchDistrict == s
+                            ? const Icon(Icons.check_circle,
+                                color: Color(0xFF047857), size: 20)
+                            : null,
+                        onTap: () => Navigator.pop(context, s),
+                      )),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 6),
+                    child: Text('Districts',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54)),
+                  ),
                   ..._districts.map((d) => ListTile(
                         leading: const Icon(Icons.location_on_outlined, size: 20),
                         title: Text(d),

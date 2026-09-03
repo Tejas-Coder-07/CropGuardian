@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crop_guardian/core/errors/friendly_error.dart';
 import 'package:crop_guardian/Widgets/bid_sheet.dart';
 import 'package:crop_guardian/core/marketplace/bid_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,18 +48,27 @@ class _MarketFeedScreenState extends State<MarketFeedScreen> {
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.red),
               title: const Text("Delete Post"),
-              onTap: () {
-                FirebaseFirestore.instance
-                    .collection('market_listings')
-                    .doc(docId)
-                    .delete();
+              onTap: () async {
                 Get.back();
-                Get.snackbar(
-                  "Deleted",
-                  "Post removed successfully",
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
-                );
+                try {
+                  await FirebaseFirestore.instance
+                      .collection('market_listings')
+                      .doc(docId)
+                      .delete();
+                  Get.snackbar(
+                    'Deleted',
+                    'Listing removed successfully',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                } catch (e) {
+                  Get.snackbar(
+                    'Could not delete',
+                    FriendlyError.from(e),
+                    backgroundColor: Colors.orange,
+                    colorText: Colors.white,
+                  );
+                }
               },
             ),
           ],
