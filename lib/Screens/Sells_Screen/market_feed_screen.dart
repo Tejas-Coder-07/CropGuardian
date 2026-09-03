@@ -331,7 +331,11 @@ class _MarketFeedScreenState extends State<MarketFeedScreen> {
                                         return const Text('Bidding');
                                       }
                                       if (st.closesAt == null) {
-                                        return const Text('Bidding not open');
+                                        return Text(
+                                          d['sellerId'] == currentUserId
+                                              ? 'Open bidding'
+                                              : 'Bidding not open yet',
+                                        );
                                       }
                                       return Text(st.countdownLabel);
                                     },
