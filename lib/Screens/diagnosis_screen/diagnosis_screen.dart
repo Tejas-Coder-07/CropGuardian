@@ -1,5 +1,6 @@
 import 'package:crop_guardian/Screens/diagnosis_screen/viewmodels/diagnosis_viewmodel.dart';
 import 'package:crop_guardian/l10n/app_localizations.dart';
+import 'package:crop_guardian/core/accessibility/accessibility_controller.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/widgets/image_picker_card.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/widgets/language_selector.dart';
 import 'package:crop_guardian/responsive_page.dart';
@@ -18,6 +19,29 @@ class DiagnosisScreen extends StatelessWidget {
       create: (_) => DiagnosisViewModel(),
       child: ResponsivePage(
         child: Scaffold(
+          floatingActionButton: Consumer<DiagnosisViewModel>(
+            builder: (context, vm, _) {
+              if (!vm.hasResult) return const SizedBox.shrink();
+              return AnimatedBuilder(
+                animation: AccessibilityController.instance,
+                builder: (context, _) {
+                  final speaking = AccessibilityController.instance.isSpeaking;
+                  return FloatingActionButton.extended(
+                    backgroundColor: const Color(0xFF166534),
+                    foregroundColor: Colors.white,
+                    onPressed: () {
+                      final text = vm.diagnosis != null
+                          ? vm.resultCrop + '. ' + vm.resultTitle + '. ' + (vm.diagnosis?.description ?? '')
+                          : vm.resultCrop + '. ' + vm.resultTitle + '.';
+                      AccessibilityController.instance.toggle(text);
+                    },
+                    icon: Icon(speaking ? Icons.stop : Icons.volume_up),
+                    label: Text(speaking ? 'Stop' : 'Listen'),
+                  );
+                },
+              );
+            },
+          ),
           appBar: AppBar(
             backgroundColor: Colors.green[900],
            iconTheme: IconThemeData(color: Colors.white),
