@@ -100,7 +100,7 @@ class BidService {
 
   /// Live auction status for a listing.
   Stream<AuctionState> auctionState(String listingId) =>
-      _listingRef(listingId).snapshots().asyncMap((doc) async {
+      _listingRef(listingId).snapshots().map((doc) {
         final d = doc.data() as Map<String, dynamic>?;
         final ts = d?['biddingClosesAt'] as Timestamp?;
         final closesAt = ts?.toDate();
@@ -108,19 +108,13 @@ class BidService {
         final now = DateTime.now();
         final isOpen = closesAt != null && closesAt.isAfter(now);
 
-        int count = 0;
-        try {
-          final snap = await _bidsRef(listingId).count().get();
-          count = snap.count ?? 0;
-        } catch (_) {
-          // A buyer cannot list bids - that is the point. Count stays hidden.
-        }
-
+        // Bid count is fetched separately by the seller view, so a buyer -
+        // who is not permitted to list bids - still gets the countdown.
         return AuctionState(
           closesAt: closesAt,
           isOpen: isOpen,
           remaining: isOpen ? closesAt.difference(now) : null,
-          bidCount: count,
+          bidCount: 0,
         );
       });
 
