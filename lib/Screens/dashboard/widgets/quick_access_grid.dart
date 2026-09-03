@@ -60,10 +60,10 @@ class QuickAccessGrid extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 0.82,
+              childAspectRatio: 0.95,
             ),
             itemCount: items.length,
             itemBuilder: (context, i) => _tile(context, items[i]),
@@ -81,13 +81,13 @@ class QuickAccessGrid extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 52,
-            width: 52,
+            height: 64,
+            width: 64,
             decoration: BoxDecoration(
               color: item.color.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(item.icon, color: item.color, size: 24),
+            child: Icon(item.icon, color: item.color, size: 28),
           ),
           const SizedBox(height: 7),
           Flexible(
@@ -97,7 +97,7 @@ class QuickAccessGrid extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                  fontSize: 11, height: 1.25, fontWeight: FontWeight.w500),
+                  fontSize: 12.5, height: 1.25, fontWeight: FontWeight.w500),
             ),
           ),
         ],
