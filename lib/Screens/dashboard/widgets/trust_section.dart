@@ -28,7 +28,7 @@ class TrustSection extends StatelessWidget {
               Row(
                 children: [
                   _buildTrustCard(
-                    title: "85% Accuracy",
+                    title: "96% Accuracy",
                     subtitle: "Diagnosis",
                     icon: Icons.biotech_rounded,
                     colors: [const Color(0xFF66BB6A), const Color(0xFF43A047)],

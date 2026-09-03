@@ -54,7 +54,6 @@ class DashboardScreen extends StatelessWidget {
               HeroSection(),
               StatsRow(),
               const QuickAccessGrid(),
-              FeatureSection(),
               TrustSection(),
             ],
           ),
