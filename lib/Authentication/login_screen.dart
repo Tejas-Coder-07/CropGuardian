@@ -1,5 +1,6 @@
 import 'package:crop_guardian/responsive_page.dart';
 import 'package:crop_guardian/core/errors/friendly_error.dart';
+import 'package:crop_guardian/Authentication/phone_login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart' show Fluttertoast, Toast, ToastGravity;
@@ -151,6 +152,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 25),
       
                     // Signup Redirect Card
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const PhoneLoginScreen()),
+                        ),
+                        icon: const Icon(Icons.phone_android, size: 18),
+                        label: const Text('Login with phone number'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white70),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
