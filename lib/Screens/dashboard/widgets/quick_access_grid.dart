@@ -31,7 +31,7 @@ class QuickAccessGrid extends StatelessWidget {
       _QuickItem(t.weatherAdvisory, Icons.cloud_outlined,
           const Color(0xFF0284C7), () => const WeatherAdvisoryScreen()),
       _QuickItem(t.marketPrices, Icons.trending_up,
-          const Color(0xFF047857), () => const _Standalone(title: 'Market Prices', child: MarketPricesPage())),
+          const Color(0xFF047857), () => const MarketPricesPage()),
       _QuickItem(t.governmentSchemes, Icons.account_balance_outlined,
           const Color(0xFF1D4ED8), () => const _Standalone(title: 'Government Schemes', child: GovernmentSchemesPage())),
       _QuickItem('Learning', Icons.menu_book_outlined,
