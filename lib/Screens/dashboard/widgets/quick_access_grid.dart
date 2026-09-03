@@ -14,6 +14,9 @@ import '../../advisory/crop_advisory_screen.dart';
 import '../../alerts/alerts_screen.dart';
 import '../../carbon/carbon_footprint_screen.dart';
 import '../../resources/resource_screen.dart';
+import '../../resources/pages/market_prices_page.dart';
+import '../../resources/pages/government_schemes_page.dart';
+import '../../resources/pages/learning_resources_page.dart';
 import '../../community_screen/community_screen.dart';
 import '../../Sells_Screen/market_feed_screen.dart';
 
@@ -28,7 +31,11 @@ class QuickAccessGrid extends StatelessWidget {
       _QuickItem(t.weatherAdvisory, Icons.cloud_outlined,
           const Color(0xFF0284C7), () => const WeatherAdvisoryScreen()),
       _QuickItem(t.marketPrices, Icons.trending_up,
-          const Color(0xFF047857), () => const ResourcesScreen()),
+          const Color(0xFF047857), () => const _Standalone(title: 'Market Prices', child: MarketPricesPage())),
+      _QuickItem(t.governmentSchemes, Icons.account_balance_outlined,
+          const Color(0xFF1D4ED8), () => const _Standalone(title: 'Government Schemes', child: GovernmentSchemesPage())),
+      _QuickItem('Learning', Icons.menu_book_outlined,
+          const Color(0xFF7C2D12), () => const _Standalone(title: 'Learning', child: LearningResourcesPage())),
       _QuickItem(t.cropAdvisory, Icons.tips_and_updates_outlined,
           const Color(0xFFB45309), () => const CropAdvisoryScreen()),
       _QuickItem(t.emergencyAlerts, Icons.notifications_active_outlined,
@@ -102,6 +109,28 @@ class QuickAccessGrid extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Wraps a Resources tab page so it can open as its own screen with an
+/// app bar, instead of only being reachable inside the tabbed view.
+class _Standalone extends StatelessWidget {
+  final String title;
+  final Widget child;
+  const _Standalone({required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0FDF4),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF166534),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      body: child,
     );
   }
 }

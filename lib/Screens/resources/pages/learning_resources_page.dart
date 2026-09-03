@@ -6,7 +6,7 @@ import '../widgets/learning_card.dart';
 class LearningResourcesPage extends StatelessWidget {
   final String searchQuery;
 
-  const LearningResourcesPage({super.key, required this.searchQuery});
+  const LearningResourcesPage({super.key, this.searchQuery = ''});
 
   @override
   Widget build(BuildContext context) {
