@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../Widgets/app_drawer.dart';
 import 'widgets/feature_card.dart';
+import 'widgets/quick_access_grid.dart';
 import 'widgets/hero_section.dart';
 import 'widgets/stats_row.dart';
 import 'widgets/trust_section.dart';
@@ -34,10 +35,7 @@ class DashboardScreen extends StatelessWidget {
                         "CropGuardian",
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 30),
-                        child: Text(AppLocalizations.of(context).appTitle, style: const TextStyle(color: Colors.green, fontSize: 18)),
-                      ),
+
                     ]
                 ),
               ],
@@ -55,6 +53,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
               HeroSection(),
               StatsRow(),
+              const QuickAccessGrid(),
               FeatureSection(),
               TrustSection(),
             ],
