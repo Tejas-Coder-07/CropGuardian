@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:crop_guardian/core/user/role_controller.dart';
 import 'package:crop_guardian/responsive_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController userPasswordController = TextEditingController();
 
   final GlobalKey<FormState> _FormKey = GlobalKey<FormState>();
+  UserRole _selectedRole = UserRole.farmer;
   bool obscureText = true;
 
   // 2. State for safe animation
@@ -185,6 +187,60 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   // UI Helper: Field Builder
+  Widget _roleSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('I want to',
+            style: TextStyle(fontSize: 13, color: Colors.black54)),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(child: _roleOption(UserRole.farmer, Icons.agriculture, 'Sell my produce')),
+            const SizedBox(width: 10),
+            Expanded(child: _roleOption(UserRole.buyer, Icons.shopping_basket_outlined, 'Buy produce')),
+          ],
+        ),
+        const SizedBox(height: 6),
+        const Text('You can change this later in the menu.',
+            style: TextStyle(fontSize: 11, color: Colors.black45)),
+      ],
+    );
+  }
+
+  Widget _roleOption(UserRole role, IconData icon, String label) {
+    final active = _selectedRole == role;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedRole = role),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        decoration: BoxDecoration(
+          color: active ? const Color(0xFFECFDF5) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: active ? const Color(0xFF34D399) : Colors.grey.shade300,
+            width: active ? 1.8 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(icon,
+                size: 22,
+                color: active ? const Color(0xFF047857) : Colors.black45),
+            const SizedBox(height: 6),
+            Text(label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+                  color: active ? const Color(0xFF022C22) : Colors.black87,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildField(TextEditingController controller, String label, IconData icon, dynamic validator) {
     return TextFormField(
       controller: controller,
@@ -215,7 +271,8 @@ class _SignupScreenState extends State<SignupScreen> {
         .then((value) {
       log("User Created");
       Fluttertoast.showToast(msg: "Account Created!", backgroundColor: Colors.green);
-      SignUpUser(userName, userPhone, userEmail, userPassword);
+      SignUpUser(userName, userPhone, userEmail, userPassword,
+          role: _selectedRole == UserRole.buyer ? 'buyer' : 'farmer');
       Navigator.pop(context); // Close loading
       Get.off(() => const LoginScreen());
     }).catchError((error) {

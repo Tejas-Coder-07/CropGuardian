@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import '../login_screen.dart';
 
 SignUpUser(String userName, String userPhone, String userEmail,
-    String userPassword) async {
+    String userPassword, {String role = 'farmer'}) async {
   User? currentUser = FirebaseAuth.instance.currentUser;
   try {
     await currentUser!.updateDisplayName(userName);
@@ -20,6 +20,7 @@ SignUpUser(String userName, String userPhone, String userEmail,
       'userPhone': userPhone,
       'userEmail': userEmail,
       'userId': currentUser!.uid,
+      'role': role,
       'createdAt': DateTime.now(),
     }).then((value) => {
       FirebaseAuth.instance.signOut(),
