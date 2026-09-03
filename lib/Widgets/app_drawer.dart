@@ -66,7 +66,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).dashboard,
-                        hindi: "डैशबोर्ड",
                         icon: Icons.dashboard_customize_rounded,
                         index: 0,
                         onTap: () => Get.offAll(() => const DashboardScreen()),
@@ -74,7 +73,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).aiDiagnosis,
-                        hindi: "फसल रोग निदान",
                         icon: Icons.center_focus_strong_rounded,
                         index: 1,
                         onTap: () => Get.to(() => const DiagnosisScreen()),
@@ -82,7 +80,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).community,
-                        hindi: "किसान समुदाय",
                         icon: Icons.forum_rounded,
                         index: 2,
                         onTap: () => Get.to(() => CommunityScreen()),
@@ -90,7 +87,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).resources,
-                        hindi: "संसाधन केंद्र",
                         icon: Icons.auto_stories_rounded,
                         index: 3,
                         onTap: () => Get.to(() => const ResourcesScreen()),
@@ -98,7 +94,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).weatherAdvisory,
-                        hindi: "मौसम सलाह",
                         icon: Icons.cloud_outlined,
                         index: 4,
                         onTap: () => Get.to(() => const WeatherAdvisoryScreen()),
@@ -106,7 +101,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).farmExpenses,
-                        hindi: "खर्च रिकॉर्ड",
                         icon: Icons.account_balance_wallet_outlined,
                         index: 5,
                         onTap: () => Get.to(() => const ExpenseTrackerScreen()),
@@ -114,7 +108,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).cropAdvisory,
-                        hindi: "फसल सलाह",
                         icon: Icons.tips_and_updates_outlined,
                         index: 6,
                         onTap: () => Get.to(() => const CropAdvisoryScreen()),
@@ -122,7 +115,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).emergencyAlerts,
-                        hindi: "आपातकालीन चेतावनी",
                         icon: Icons.notifications_active_outlined,
                         index: 7,
                         onTap: () => Get.to(() => const AlertsScreen()),
@@ -130,7 +122,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: AppLocalizations.of(context).language,
-                        hindi: "भाषा / ಭಾಷೆ",
                         icon: Icons.language,
                         index: 8,
                         onTap: () => LanguagePickerSheet.show(context),
@@ -138,7 +129,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: "Buyer / Seller",
-                        hindi: "खरीदार / विक्रेता",
                         icon: Icons.swap_horiz,
                         index: 9,
                         onTap: () => RolePickerSheet.show(context),
@@ -146,7 +136,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: "Accessibility",
-                        hindi: "सुगम्यता",
                         icon: Icons.accessibility_new,
                         index: 10,
                         onTap: () => AccessibilitySheet.show(context),
@@ -155,7 +144,6 @@ class AppDrawer extends StatelessWidget {
                         _buildGradientTile(
                           context,
                         title: "Admin Panel",
-                        hindi: "व्यवस्थापक",
                         icon: Icons.admin_panel_settings_outlined,
                         index: 11,
                         onTap: () => Get.to(() => const AdminPanelScreen()),
@@ -163,7 +151,6 @@ class AppDrawer extends StatelessWidget {
                       _buildGradientTile(
                         context,
                         title: "Carbon Footprint",
-                        hindi: "कार्बन फुटप्रिंट",
                         icon: Icons.eco_outlined,
                         index: 12,
                         onTap: () => Get.to(() => const CarbonFootprintScreen()),
@@ -227,7 +214,7 @@ class AppDrawer extends StatelessWidget {
   Widget _buildGradientTile(
       BuildContext context, {
         required String title,
-        required String hindi,
+        String hindi = '',
         required IconData icon,
         required int index,
         required VoidCallback onTap,
@@ -264,13 +251,6 @@ class AppDrawer extends StatelessWidget {
             color: isActive ? Colors.white : Colors.black87,
             fontWeight: FontWeight.bold,
             fontSize: 16,
-          ),
-        ),
-        subtitle: Text(
-          hindi,
-          style: TextStyle(
-            color: isActive ? Colors.white70 : Colors.grey[600],
-            fontSize: 12,
           ),
         ),
         trailing: Icon(
