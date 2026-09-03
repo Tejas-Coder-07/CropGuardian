@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../Widgets/app_drawer.dart';
 import 'widgets/feature_card.dart';
 import 'widgets/quick_access_grid.dart';
+import 'widgets/dashboard_footer.dart';
 import 'widgets/hero_section.dart';
 import 'widgets/stats_row.dart';
 import 'widgets/trust_section.dart';
@@ -55,6 +56,7 @@ class DashboardScreen extends StatelessWidget {
               StatsRow(),
               const QuickAccessGrid(),
               TrustSection(),
+              const DashboardFooter(),
             ],
           ),
         ),
