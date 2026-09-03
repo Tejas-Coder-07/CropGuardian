@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:crop_guardian/core/errors/friendly_error.dart';
 import 'package:crop_guardian/core/user/role_controller.dart';
 import 'package:crop_guardian/responsive_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -277,7 +278,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Get.off(() => const LoginScreen());
     }).catchError((error) {
       Navigator.pop(context);
-      Fluttertoast.showToast(msg: error.toString(), backgroundColor: Colors.red);
+      Fluttertoast.showToast(msg: FriendlyError.from(error), backgroundColor: Colors.red);
     });
   }
 }
