@@ -87,6 +87,7 @@ class _MyAppState extends State<MyApp> {
       animation: Listenable.merge([LanguageController.instance, AccessibilityController.instance]),
       builder: (context, _) {
         return GetMaterialApp(
+          key: ValueKey(LanguageController.instance.locale.languageCode),
           debugShowCheckedModeBanner: false,
           title: 'Crop Guardian',
           locale: LanguageController.instance.locale,

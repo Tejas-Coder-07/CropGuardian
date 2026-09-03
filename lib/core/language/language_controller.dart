@@ -7,6 +7,7 @@
 // rather than English.
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageController extends ChangeNotifier {
@@ -51,6 +52,7 @@ class LanguageController extends ChangeNotifier {
     _locale = Locale(code);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, code);
+    Get.updateLocale(_locale);
     notifyListeners();
   }
 
