@@ -90,5 +90,15 @@
   "heroTagline": "फसल रोग की जांच और विशेषज्ञ सलाह, आपकी भाषा में।",
   "resourceLibrary": "संसाधन केंद्र",
   "organicSolutions": "जैविक उपाय",
-  "marketPlace": "बाज़ार"
+  "marketPlace": "बाज़ार",
+  "fullName": "पूरा नाम",
+  "emailAddress": "ईमेल पता",
+  "phoneNumber": "फोन नंबर",
+  "location": "स्थान",
+  "farmSize": "खेत का आकार",
+  "cropsGrown": "उगाई जाने वाली फसलें",
+  "preferredLanguage": "पसंदीदा भाषा",
+  "editProfile": "प्रोफ़ाइल संपादित करें",
+  "searchResources": "खोजें...",
+  "farmerResources": "किसान संसाधन केंद्र"
 }

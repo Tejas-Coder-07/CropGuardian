@@ -83,14 +83,6 @@ class HeroSection extends StatelessWidget {
                   ),
 
                 const SizedBox(height: 10),
-                const Text(
-                  "हर किसान के लिए एआई-संचालित खेती",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFFA5D6A7),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(height: 15),
                 Text(
                   AppLocalizations.of(context).heroTagline,

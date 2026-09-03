@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ProfileForm extends StatelessWidget {
@@ -33,19 +34,19 @@ class ProfileForm extends StatelessWidget {
         children: [
           _buildSectionTitle("Registration Details (Read Only)"),
           _buildModernField(
-            label: "Full Name / पूरा नाम",
+            label: AppLocalizations.of(context).fullName,
             icon: Icons.person_outline,
             controller: nameController,
             isReadOnly: true,
           ),
           _buildModernField(
-            label: "Email Address / ईमेल",
+            label: AppLocalizations.of(context).emailAddress,
             icon: Icons.email_outlined,
             controller: emailController,
             isReadOnly: true,
           ),
           _buildModernField(
-            label: "Phone Number / फोन नंबर",
+            label: AppLocalizations.of(context).phoneNumber,
             icon: Icons.phone_android_outlined,
             controller: phoneController,
             isReadOnly: true,
@@ -58,22 +59,22 @@ class ProfileForm extends StatelessWidget {
 
           _buildSectionTitle("Additional Details (Editable)"),
           _buildModernField(
-            label: "Location / स्थान",
+            label: AppLocalizations.of(context).location,
             icon: Icons.location_on_outlined,
             controller: locationController,
             isReadOnly: false,
             hint: "Enter your village or city",
           ),
-          _buildLanguageDropdown(),
+          _buildLanguageDropdown(context),
           _buildModernField(
-            label: "Farm Size / खेत का आकार",
+            label: AppLocalizations.of(context).farmSize,
             icon: Icons.landscape_outlined,
             controller: farmSizeController,
             isReadOnly: false,
             hint: "e.g. 5 Acres",
           ),
           _buildModernField(
-            label: "Crops Grown / उगाई जाने वाली फसलें",
+            label: AppLocalizations.of(context).cropsGrown,
             icon: Icons.grass_outlined,
             controller: cropsController,
             isReadOnly: false,
@@ -151,14 +152,14 @@ class ProfileForm extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageDropdown() {
+  Widget _buildLanguageDropdown(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Preferred Language / पसंदीदा भाषा",
+          Text(
+            AppLocalizations.of(context).preferredLanguage,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,

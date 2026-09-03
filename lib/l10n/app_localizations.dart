@@ -645,6 +645,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Marketplace'**
   String get marketPlace;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @farmSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm Size'**
+  String get farmSize;
+
+  /// No description provided for @cropsGrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops Grown'**
+  String get cropsGrown;
+
+  /// No description provided for @preferredLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Language'**
+  String get preferredLanguage;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @searchResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get searchResources;
+
+  /// No description provided for @farmerResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Farmer Resources'**
+  String get farmerResources;
 }
 
 class _AppLocalizationsDelegate

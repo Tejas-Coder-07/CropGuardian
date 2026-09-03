@@ -203,7 +203,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           const Text(
-            "Smart Agriculture • कृषि रक्षक",
+            "Smart Agriculture",
             style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500),
           ),
         ],
@@ -287,11 +287,11 @@ class AppDrawer extends StatelessWidget {
                     child: Icon(Icons.person_rounded, color: Colors.black),
                   ),
                   const SizedBox(width: 15),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("My Profile", style: TextStyle(fontWeight: FontWeight.w900)),
-                      Text("मेरा प्रोफाइल", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      const Text("My Profile", style: TextStyle(fontWeight: FontWeight.w900)),
+                      Text(AppLocalizations.of(context).profile, style: const TextStyle(fontSize: 11, color: Colors.grey)),
                     ],
                   ),
                   const Spacer(),
@@ -332,8 +332,8 @@ class AppDrawer extends StatelessWidget {
               }
             },
             icon: const Icon(Icons.power_settings_new_rounded, color: Colors.red),
-            label: const Text(
-              "Logout • लॉग आउट",
+            label: Text(
+              AppLocalizations.of(context).logout,
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 14),
             ),
           ),

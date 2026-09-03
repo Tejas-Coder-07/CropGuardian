@@ -290,4 +290,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get marketPlace => 'Marketplace';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get farmSize => 'Farm Size';
+
+  @override
+  String get cropsGrown => 'Crops Grown';
+
+  @override
+  String get preferredLanguage => 'Preferred Language';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get searchResources => 'Search...';
+
+  @override
+  String get farmerResources => 'Farmer Resources';
 }

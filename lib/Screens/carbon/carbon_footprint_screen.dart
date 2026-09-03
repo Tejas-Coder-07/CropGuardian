@@ -115,7 +115,6 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
           children: [
             Text('Carbon Footprint',
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('कार्बन फुटप्रिंट', style: TextStyle(fontSize: 13)),
           ],
         ),
       ),

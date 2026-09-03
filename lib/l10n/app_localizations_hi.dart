@@ -283,4 +283,34 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get marketPlace => 'बाज़ार';
+
+  @override
+  String get fullName => 'पूरा नाम';
+
+  @override
+  String get emailAddress => 'ईमेल पता';
+
+  @override
+  String get phoneNumber => 'फोन नंबर';
+
+  @override
+  String get location => 'स्थान';
+
+  @override
+  String get farmSize => 'खेत का आकार';
+
+  @override
+  String get cropsGrown => 'उगाई जाने वाली फसलें';
+
+  @override
+  String get preferredLanguage => 'पसंदीदा भाषा';
+
+  @override
+  String get editProfile => 'प्रोफ़ाइल संपादित करें';
+
+  @override
+  String get searchResources => 'खोजें...';
+
+  @override
+  String get farmerResources => 'किसान संसाधन केंद्र';
 }

@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crop_guardian/Screens/farmer_profile/utils/profile_completion_util.dart';
 import 'package:crop_guardian/responsive_page.dart';
@@ -157,7 +158,7 @@ class FarmerProfileScreen extends StatelessWidget {
         ),
         // 4. Gradient "Edit Profile" Button at the bottom
         bottomSheet: FooterSection(
-          buttonText: "Edit Profile / प्रोफ़ाइल संपादित करें",
+          buttonText: AppLocalizations.of(context).editProfile,
           onPressed: () {
             Navigator.push(
               context,

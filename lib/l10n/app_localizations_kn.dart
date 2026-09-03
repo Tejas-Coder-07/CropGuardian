@@ -286,4 +286,34 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get marketPlace => 'ಮಾರುಕಟ್ಟೆ';
+
+  @override
+  String get fullName => 'ಪೂರ್ಣ ಹೆಸರು';
+
+  @override
+  String get emailAddress => 'ಇಮೇಲ್ ವಿಳಾಸ';
+
+  @override
+  String get phoneNumber => 'ಫೋನ್ ಸಂಖ್ಯೆ';
+
+  @override
+  String get location => 'ಸ್ಥಳ';
+
+  @override
+  String get farmSize => 'ಜಮೀನಿನ ಗಾತ್ರ';
+
+  @override
+  String get cropsGrown => 'ಬೆಳೆಯುವ ಬೆಳೆಗಳು';
+
+  @override
+  String get preferredLanguage => 'ಆದ್ಯತೆಯ ಭಾಷೆ';
+
+  @override
+  String get editProfile => 'ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ';
+
+  @override
+  String get searchResources => 'ಹುಡುಕಿ...';
+
+  @override
+  String get farmerResources => 'ರೈತ ಸಂಪನ್ಮೂಲ ಕೇಂದ್ರ';
 }

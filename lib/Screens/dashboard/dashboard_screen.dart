@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/responsive_page.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class DashboardScreen extends StatelessWidget {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 30),
-                        child: Text("कृषि रक्षक",style: TextStyle(color: Colors.green, fontSize: 18)),
+                        child: Text(AppLocalizations.of(context).appTitle, style: const TextStyle(color: Colors.green, fontSize: 18)),
                       ),
                     ]
                 ),

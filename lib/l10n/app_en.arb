@@ -90,5 +90,15 @@
   "heroTagline": "Crop disease diagnosis and expert guidance in your language.",
   "resourceLibrary": "Resource Library",
   "organicSolutions": "Organic Solutions",
-  "marketPlace": "Marketplace"
+  "marketPlace": "Marketplace",
+  "fullName": "Full Name",
+  "emailAddress": "Email Address",
+  "phoneNumber": "Phone Number",
+  "location": "Location",
+  "farmSize": "Farm Size",
+  "cropsGrown": "Crops Grown",
+  "preferredLanguage": "Preferred Language",
+  "editProfile": "Edit Profile",
+  "searchResources": "Search...",
+  "farmerResources": "Farmer Resources"
 }

@@ -90,5 +90,15 @@
   "heroTagline": "ಬೆಳೆ ರೋಗ ಪತ್ತೆ ಮತ್ತು ತಜ್ಞ ಸಲಹೆ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.",
   "resourceLibrary": "ಸಂಪನ್ಮೂಲ ಕೇಂದ್ರ",
   "organicSolutions": "ಸಾವಯವ ಪರಿಹಾರ",
-  "marketPlace": "ಮಾರುಕಟ್ಟೆ"
+  "marketPlace": "ಮಾರುಕಟ್ಟೆ",
+  "fullName": "ಪೂರ್ಣ ಹೆಸರು",
+  "emailAddress": "ಇಮೇಲ್ ವಿಳಾಸ",
+  "phoneNumber": "ಫೋನ್ ಸಂಖ್ಯೆ",
+  "location": "ಸ್ಥಳ",
+  "farmSize": "ಜಮೀನಿನ ಗಾತ್ರ",
+  "cropsGrown": "ಬೆಳೆಯುವ ಬೆಳೆಗಳು",
+  "preferredLanguage": "ಆದ್ಯತೆಯ ಭಾಷೆ",
+  "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+  "searchResources": "ಹುಡುಕಿ...",
+  "farmerResources": "ರೈತ ಸಂಪನ್ಮೂಲ ಕೇಂದ್ರ"
 }

@@ -1,3 +1,4 @@
+import 'package:crop_guardian/l10n/app_localizations.dart';
 import 'package:crop_guardian/responsive_page.dart';
 import 'package:flutter/material.dart';
 import 'pages/government_schemes_page.dart';
@@ -53,7 +54,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                     "Farmer Resources",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  const Text("किसान संसाधन केंद्र", style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  Text(AppLocalizations.of(context).farmerResources, style: const TextStyle(color: Colors.white70, fontSize: 14)),
                   const SizedBox(height: 20),
                   // SEARCH INPUT
                   Container(
@@ -71,7 +72,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: "Search alphabetically... / खोजें...",
+                        hintText: AppLocalizations.of(context).searchResources,
                         prefixIcon: const Icon(Icons.search, color: Color(0xFF1B5E20)),
                         suffixIcon: searchQuery.isNotEmpty
                             ? IconButton(

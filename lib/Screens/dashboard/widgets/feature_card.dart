@@ -27,14 +27,6 @@ class FeatureSection extends StatelessWidget {
               letterSpacing: -0.5,
             ),
           ),
-          const Text(
-            "किसानों के लिए शक्तिशाली सुविधाएं",
-            style: TextStyle(
-              fontSize: 16,
-              color: Color(0xFF4CAF50),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
           const SizedBox(height: 25),
 
           InkWell(
@@ -44,7 +36,6 @@ class FeatureSection extends StatelessWidget {
             },
             child: _buildMultiColorCard(
               title: AppLocalizations.of(context).aiDiagnosis,
-              hindiTitle: "एआई फसल निदान",
               description: AppLocalizations.of(context).diagnosisDesc,
               icon: Icons.auto_awesome_rounded,
               // Gradient: Deep Green to Lime
@@ -59,7 +50,6 @@ class FeatureSection extends StatelessWidget {
             },
             child: _buildMultiColorCard(
               title: AppLocalizations.of(context).community,
-              hindiTitle: "सामुदायिक सहायता",
               description: AppLocalizations.of(context).communityDesc,
               icon: Icons.groups_3_rounded,
               // Gradient: Deep Orange to Amber
@@ -74,7 +64,6 @@ class FeatureSection extends StatelessWidget {
             },
             child: _buildMultiColorCard(
               title: AppLocalizations.of(context).resourceLibrary,
-              hindiTitle: "संसाधन पुस्तकालय",
               description: AppLocalizations.of(context).resourceDesc,
               icon: Icons.menu_book_rounded,
               // Gradient: Royal Blue to Sky Blue
@@ -91,7 +80,6 @@ class FeatureSection extends StatelessWidget {
             ,
             child: _buildMultiColorCard(
               title: AppLocalizations.of(context).organicSolutions,
-              hindiTitle: "जैविक समाधान",
               description: AppLocalizations.of(context).organicDesc,
               icon: Icons.eco_rounded,
               // Gradient: Teal to Mint
@@ -105,7 +93,6 @@ class FeatureSection extends StatelessWidget {
             },
             child: _buildMultiColorCard(
               title: AppLocalizations.of(context).marketPlace,
-              hindiTitle: "बाजार स्थान",
               description: AppLocalizations.of(context).marketDesc,
               icon: Icons.menu_book_rounded,
               // Gradient: Royal Blue to Sky Blue
@@ -120,7 +107,7 @@ class FeatureSection extends StatelessWidget {
 
   Widget _buildMultiColorCard({
     required String title,
-    required String hindiTitle,
+    String hindiTitle = '',
     required String description,
     required IconData icon,
     required List<Color> gradientColors,
@@ -181,14 +168,6 @@ class FeatureSection extends StatelessWidget {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                        ),
-                      ),
-                      Text(
-                        hindiTitle,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 8),
