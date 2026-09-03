@@ -68,7 +68,8 @@ class CommunityController extends GetxController {
           .get();
 
       // Get the profile image URL from the user's document
-      String? userProfilePic = userDoc.get('profileImageUrl');
+      String? userProfilePic =
+          (userDoc.data() as Map<String, dynamic>?)?['profileImageUrl'] as String?;
       String userName = userDoc.get('userName') ?? "Farmer";
 
       String? imageUrl;
@@ -154,7 +155,8 @@ class CommunityController extends GetxController {
       String? userProfileUrl;
       if (userDoc.exists) {
         // Fetch the specific field name from your FarmerProfileModel
-        userProfileUrl = userDoc.get('profileImageUrl');
+        userProfileUrl =
+            (userDoc.data() as Map<String, dynamic>?)?['profileImageUrl'] as String?;
       }
 
       // 2. Add the comment with the profile image URL
