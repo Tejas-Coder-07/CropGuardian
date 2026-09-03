@@ -1,6 +1,7 @@
 // Crop Guardian - emergency alerts
 import 'package:crop_guardian/l10n/app_localizations.dart';
 // Author: Tejas S <tejus.sgowda07@gmail.com>
+import 'package:shared_preferences/shared_preferences.dart';
 // Team Maverick - Cambridge Institute of Engineering
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,15 @@ class AlertsScreen extends StatefulWidget {
 
 class _AlertsScreenState extends State<AlertsScreen> {
   FarmLocation? _farm;
+  String? _watchDistrict;
+
+  /// Districts a farmer might watch beyond their own - family land, a market
+  /// they sell into, or a region where an outbreak is spreading toward them.
+  static const _districts = [
+    'Bengaluru Urban', 'Kolar', 'Chikkaballapur', 'Tumakuru', 'Mandya',
+    'Mysuru', 'Hassan', 'Dharwad', 'Belagavi', 'Kalaburagi', 'Davanagere',
+    'Pune', 'Nashik', 'Ahmednagar', 'Solapur', 'Nagpur',
+  ];
 
   @override
   void initState() {
@@ -24,6 +34,11 @@ class _AlertsScreenState extends State<AlertsScreen> {
     AlertService.instance.init();
     LocationService.instance.load().then((f) {
       if (mounted) setState(() => _farm = f);
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      if (mounted) {
+        setState(() => _watchDistrict = prefs.getString('alert_watch_district'));
+      }
     });
   }
 
@@ -59,7 +74,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
       ),
       body: Column(
         children: [
-          if (_farm != null) _areaBar(),
+          _areaBar(),
           Expanded(
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: AlertService.instance.alertStream(),
@@ -82,9 +97,90 @@ class _AlertsScreenState extends State<AlertsScreen> {
     );
   }
 
-  Widget _areaBar() => Container(
+  Future<void> _pickDistrict() async {
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(20),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            const Text('Watch a district',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            const Text(
+              'Get warnings for somewhere other than your own farm - family land, or a region where disease is spreading.',
+              style: TextStyle(fontSize: 12.5, color: Colors.black54, height: 1.4),
+            ),
+            const SizedBox(height: 14),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.my_location, size: 20),
+                    title: const Text('My farm location'),
+                    onTap: () => Navigator.pop(context, ''),
+                  ),
+                  const Divider(height: 1),
+                  ..._districts.map((d) => ListTile(
+                        leading: const Icon(Icons.location_on_outlined, size: 20),
+                        title: Text(d),
+                        trailing: _watchDistrict == d
+                            ? const Icon(Icons.check_circle,
+                                color: Color(0xFF047857), size: 20)
+                            : null,
+                        onTap: () => Navigator.pop(context, d),
+                      )),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (picked == null || !mounted) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    if (picked.isEmpty) {
+      await prefs.remove('alert_watch_district');
+    } else {
+      await prefs.setString('alert_watch_district', picked);
+    }
+    if (mounted) {
+      setState(() => _watchDistrict = picked.isEmpty ? null : picked);
+    }
+  }
+
+  Widget _areaBar() {
+    final watching = _watchDistrict ?? _farm?.label;
+    return InkWell(
+      onTap: _pickDistrict,
+      child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         color: const Color(0xFFECFDF5),
         child: Row(
           children: [
@@ -93,13 +189,19 @@ class _AlertsScreenState extends State<AlertsScreen> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'Watching ${_farm!.label} for weather and outbreak warnings',
+                watching == null
+                    ? 'Tap to choose a district to watch'
+                    : 'Watching ' + watching + ' for weather and outbreak warnings',
                 style: const TextStyle(fontSize: 12.5, color: Color(0xFF047857)),
               ),
             ),
+            const Icon(Icons.edit_location_alt_outlined,
+                size: 16, color: Color(0xFF047857)),
           ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _alertCard(Map<String, dynamic> a) {
     final severity = a['severity']?.toString() ?? 'info';
