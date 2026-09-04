@@ -156,6 +156,13 @@ class _BidSheetState extends State<BidSheet> {
               StreamBuilder<AuctionState>(
                 stream: BidService.instance.auctionState(widget.listingId),
                 builder: (context, snap) {
+                  if (snap.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text('Could not load bidding: ' + snap.error.toString(),
+                          style: const TextStyle(fontSize: 12.5, color: Colors.red)),
+                    );
+                  }
                   if (!snap.hasData) {
                     return const Padding(
                       padding: EdgeInsets.symmetric(vertical: 30),

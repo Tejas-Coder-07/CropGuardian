@@ -27,6 +27,15 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Rebuild when the admin flag arrives - it is read from Firestore after
+    // login, so a stateless build would miss it and hide the panel forever.
+    return AnimatedBuilder(
+      animation: RoleController.instance,
+      builder: (context, _) => _drawer(context),
+    );
+  }
+
+  Widget _drawer(BuildContext context) {
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.85,
       backgroundColor: Colors.white,

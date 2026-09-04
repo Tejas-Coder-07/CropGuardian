@@ -31,6 +31,7 @@ class _SellItemScreenState extends State<SellItemScreen> {
   late TextEditingController _quantityController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+  DateTime? _biddingClosesAt;
 
   // New Dropdown Variables
   String selectedCategory = 'Vegetables';
@@ -104,6 +105,10 @@ class _SellItemScreenState extends State<SellItemScreen> {
 
       Map<String, dynamic> data = {
         'sellerId': user.uid,
+        // Sealed bidding closes at this time. Set on the sell form so the
+        // seller decides up front, rather than hunting for it later.
+        if (_biddingClosesAt != null)
+          'biddingClosesAt': Timestamp.fromDate(_biddingClosesAt!),
         'userName': currentUserName, // UPDATED: Now uses Firestore data
         'profileImageUrl': currentUserProfile, // UPDATED: Now uses Firestore data
         'productName': _nameController.text.trim(),
@@ -184,6 +189,38 @@ class _SellItemScreenState extends State<SellItemScreen> {
                   const SizedBox(width: 10),
                   Expanded(child: TextFormField(controller: _quantityController, decoration: const InputDecoration(labelText: "Quantity (e.g., 500 KG)", border: OutlineInputBorder()))),
                 ],
+              ),
+              const SizedBox(height: 14),
+              InkWell(
+                onTap: () async {
+                  final d = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now().add(const Duration(days: 3)),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 60)),
+                  );
+                  if (d == null || !mounted) return;
+                  final t = await showTimePicker(
+                    context: context,
+                    initialTime: const TimeOfDay(hour: 18, minute: 0),
+                  );
+                  if (t == null || !mounted) return;
+                  setState(() => _biddingClosesAt =
+                      DateTime(d.year, d.month, d.day, t.hour, t.minute));
+                },
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    labelText: 'Bidding closes (optional)',
+                    border: OutlineInputBorder(),
+                    helperText: 'Buyers place sealed bids. Highest wins at closing.',
+                  ),
+                  child: Text(
+                    _biddingClosesAt == null
+                        ? 'Tap to set a closing time'
+                        : _biddingClosesAt.toString().substring(0, 16),
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ),
               ),
               const SizedBox(height: 15),
               TextFormField(controller: _phoneController, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: "Contact Phone", border: OutlineInputBorder())),

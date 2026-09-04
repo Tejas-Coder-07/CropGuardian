@@ -105,14 +105,24 @@ class LocationService {
         permission == LocationPermission.deniedForever) {
       return null;
     }
-
-    final pos = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 20),
-      ),
-    );
-
+    // GPS often cannot get a fix indoors. Try a fresh reading, fall back to
+    // the last known position, and give up gracefully rather than hanging.
+    Position? pos;
+    try {
+      pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 12),
+        ),
+      );
+    } catch (_) {
+      try {
+        pos = await Geolocator.getLastKnownPosition();
+      } catch (_) {
+        pos = null;
+      }
+    }
+    if (pos == null) return null;
     var district = '';
     var state = '';
     try {
