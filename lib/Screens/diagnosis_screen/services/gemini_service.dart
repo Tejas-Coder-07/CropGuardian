@@ -43,7 +43,7 @@ class GeminiService {
       }
       throw Exception('Gemini returned an empty response.');
     }
-    throw Exception('Gemini API error ${response.statusCode}: ${response.body}');
+    throw Exception(response.statusCode == 429 ? 'The expert model is busy right now. Please wait a moment and try again.' : 'Could not reach the expert model. Check your connection.');
   }
 
   String _buildPrompt(String? userDescription, String language) {
