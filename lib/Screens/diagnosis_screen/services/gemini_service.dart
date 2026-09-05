@@ -10,7 +10,7 @@ import '../models/diagnosis_model.dart';
 
 class GeminiService {
   static const String _endpoint =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent';
 
   Future<String> analyzeImage(File imageFile, String? userDescription,
       {String language = 'English'}) async {
