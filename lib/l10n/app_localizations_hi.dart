@@ -313,4 +313,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get farmerResources => 'किसान संसाधन केंद्र';
+
+  @override
+  String get buyerSeller => 'खरीदार / विक्रेता';
+
+  @override
+  String get accessibility => 'सुगम्यता';
 }

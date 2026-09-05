@@ -328,7 +328,7 @@ class _MarketFeedScreenState extends State<MarketFeedScreen> {
                                     listingId: doc.id,
                                     cropName: d['productName'] ?? 'Produce',
                                     askingPrice:
-                                        (d['price'] as num?)?.toDouble() ?? 0,
+                                        double.tryParse(d['price'].toString()) ?? 0,
                                     sellerId: d['sellerId'] ?? '',
                                   ),
                                   icon: const Icon(Icons.gavel, size: 17),

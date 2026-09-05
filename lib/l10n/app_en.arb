@@ -100,5 +100,7 @@
   "preferredLanguage": "Preferred Language",
   "editProfile": "Edit Profile",
   "searchResources": "Search...",
-  "farmerResources": "Farmer Resources"
+  "farmerResources": "Farmer Resources",
+  "buyerSeller": "Buyer / Seller",
+  "accessibility": "Accessibility"
 }

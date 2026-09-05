@@ -320,4 +320,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get farmerResources => 'Farmer Resources';
+
+  @override
+  String get buyerSeller => 'Buyer / Seller';
+
+  @override
+  String get accessibility => 'Accessibility';
 }

@@ -316,4 +316,10 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get farmerResources => 'ರೈತ ಸಂಪನ್ಮೂಲ ಕೇಂದ್ರ';
+
+  @override
+  String get buyerSeller => 'ಖರೀದಿದಾರ / ಮಾರಾಟಗಾರ';
+
+  @override
+  String get accessibility => 'ಪ್ರವೇಶಿಸುವಿಕೆ';
 }

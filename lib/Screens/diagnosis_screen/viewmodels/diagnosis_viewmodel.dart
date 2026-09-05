@@ -19,7 +19,11 @@ class DiagnosisViewModel extends ChangeNotifier {
 
   File? _selectedImage;
   String _description = '';
-  String _selectedLanguage = LanguageController.instance.englishName;
+  // Read live from the controller rather than caching at construction, so
+  // switching language in the drawer applies to the next diagnosis.
+  String? _overrideLanguage;
+  String get _selectedLanguage =>
+      _overrideLanguage ?? LanguageController.instance.englishName;
   DiagnosisModel? _diagnosis;
   OfflinePrediction? _offlineResult;
   DiagnosisSource? _source;
@@ -99,7 +103,7 @@ class DiagnosisViewModel extends ChangeNotifier {
       _ => 'en',
     };
     LanguageController.instance.setLanguage(code);
-    _selectedLanguage = language;
+    _overrideLanguage = language;
     _ttsService.setLanguage(language);
     notifyListeners();
   }

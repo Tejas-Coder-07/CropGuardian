@@ -705,6 +705,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Farmer Resources'**
   String get farmerResources;
+
+  /// No description provided for @buyerSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer / Seller'**
+  String get buyerSeller;
+
+  /// No description provided for @accessibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility'**
+  String get accessibility;
 }
 
 class _AppLocalizationsDelegate

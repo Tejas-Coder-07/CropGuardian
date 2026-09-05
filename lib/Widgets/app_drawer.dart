@@ -95,14 +95,14 @@ class AppDrawer extends StatelessWidget {
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Buyer / Seller",
+                        title: AppLocalizations.of(context).buyerSeller,
                         icon: Icons.swap_horiz,
                         index: 9,
                         onTap: () => RolePickerSheet.show(context),
                       ),
                       _buildGradientTile(
                         context,
-                        title: "Accessibility",
+                        title: AppLocalizations.of(context).accessibility,
                         icon: Icons.accessibility_new,
                         index: 10,
                         onTap: () => AccessibilitySheet.show(context),
