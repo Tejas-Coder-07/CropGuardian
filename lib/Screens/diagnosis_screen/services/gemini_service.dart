@@ -71,7 +71,8 @@ Rules:
 - Prefer organic or low-cost remedies first; list chemicals only when necessary.
 - Always append to preventiveMeasures: "Confirm chemical dosage with your local agriculture officer before spraying."
 - Write ALL text values in . Keep JSON keys in English.
-- Use simple words a farmer with little schooling can understand.$notes''';
+- Use simple words a farmer with little schooling can understand.
+- Write ALL text values in $language. Keep the JSON keys in English.$notes''';
   }
 
   DiagnosisModel parseDiagnosisResponse(String responseText) {
