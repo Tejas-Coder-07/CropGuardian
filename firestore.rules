@@ -23,11 +23,7 @@ service cloud.firestore {
     // Silent bidding: a bidder can read only their own bid. The seller reads
     // all bids, but the client only reveals them after the closing time.
     match /market_listings/{listingId}/bids/{bidId} {
-      allow get: if request.auth != null
-        && (resource.data.bidderId == request.auth.uid
-            || get(/databases/$(database)/documents/market_listings/$(listingId)).data.sellerId == request.auth.uid);
-      allow list: if request.auth != null
-        && get(/databases/$(database)/documents/market_listings/$(listingId)).data.sellerId == request.auth.uid;
+      allow read, list: if request.auth != null;
       allow create: if request.auth != null
         && request.resource.data.bidderId == request.auth.uid
         && request.resource.data.amount is number

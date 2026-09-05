@@ -1,5 +1,8 @@
 // Crop Guardian - carbon footprint
 // Author: Tejas S <tejus.sgowda07@gmail.com>
+import 'package:crop_guardian/core/accessibility/accessibility_controller.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:crop_guardian/core/language/language_controller.dart';
 // Team Maverick - Cambridge Institute of Engineering
 //
 // A farmer enters what they used this season and sees where the emissions came
@@ -31,6 +34,10 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
     'residue_burnt_tonnes': TextEditingController(),
   };
 
+  // A farmer will not fill nine numeric fields. These four cover the bulk of
+  // on-farm emissions; the rest default to zero and can be added later.
+  static const _essential = {'area_hectares', 'urea_kg', 'diesel_litres', 'residue_burnt_tonnes'};
+
   static const _labels = {
     'area_hectares': 'Farm area (hectares)',
     'urea_kg': 'Urea used (kg)',
@@ -44,6 +51,7 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   };
 
   Map<String, dynamic>? _result;
+  bool _showAll = false;
   bool _loading = false;
   String _error = '';
 
@@ -53,6 +61,42 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
       c.dispose();
     }
     super.dispose();
+  }
+
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  String? _listeningFor;
+
+  /// Lets a farmer speak a number instead of typing it. Spoken digits are
+  /// stripped to numerals, so 'twenty five kilos' still lands as 25 when the
+  /// recogniser returns digits.
+  Future<void> _listen(String key, TextEditingController controller) async {
+    if (_listeningFor != null) {
+      await _speech.stop();
+      setState(() => _listeningFor = null);
+      return;
+    }
+
+    final available = await _speech.initialize();
+    if (!available || !mounted) return;
+
+    setState(() => _listeningFor = key);
+
+    final locale = switch (LanguageController.instance.locale.languageCode) {
+      'hi' => 'hi_IN',
+      'kn' => 'kn_IN',
+      _ => 'en_IN',
+    };
+
+    await _speech.listen(
+      localeId: locale,
+      onResult: (r) {
+        final digits = r.recognizedWords.replaceAll(RegExp(r'[^0-9.]'), '');
+        if (digits.isNotEmpty) controller.text = digits;
+        if (r.finalResult && mounted) {
+          setState(() => _listeningFor = null);
+        }
+      },
+    );
   }
 
   Future<void> _calculate() async {
@@ -106,6 +150,27 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _result == null
+          ? null
+          : AnimatedBuilder(
+              animation: AccessibilityController.instance,
+              builder: (context, _) {
+                final speaking = AccessibilityController.instance.isSpeaking;
+                return FloatingActionButton.extended(
+                  backgroundColor: const Color(0xFF166534),
+                  foregroundColor: Colors.white,
+                  onPressed: () {
+                    final r = _result!;
+                    final sug = (r['suggestions'] as List? ?? [])
+                        .map((e) => e.toString())
+                        .join(' ');
+                    final text = 'Your total emissions are ' + r['total_kg_co2e'].toString() + ' kilograms of carbon dioxide. Rating: ' + r['rating'].toString() + '. ' + sug;
+                  },
+                  icon: Icon(speaking ? Icons.stop : Icons.volume_up),
+                  label: Text(speaking ? 'Stop' : 'Listen'),
+                );
+              },
+            ),
       backgroundColor: const Color(0xFFF0FDF4),
       appBar: AppBar(
         backgroundColor: const Color(0xFF166534),
@@ -126,13 +191,22 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
             style: TextStyle(fontSize: 13, color: Colors.black54),
           ),
           const SizedBox(height: 16),
-          ..._fields.entries.map((e) => Padding(
+          ..._fields.entries.where((e) => _showAll || _essential.contains(e.key)).map((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: TextField(
                   controller: e.value,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(_listeningFor == e.key
+                          ? Icons.mic
+                          : Icons.mic_none),
+                      color: _listeningFor == e.key
+                          ? Colors.red
+                          : const Color(0xFF047857),
+                      onPressed: () => _listen(e.key, e.value),
+                    ),
                     labelText: _labels[e.key],
                     border: const OutlineInputBorder(),
                     isDense: true,
@@ -141,6 +215,11 @@ class _CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                   ),
                 ),
               )),
+          TextButton.icon(
+            onPressed: () => setState(() => _showAll = !_showAll),
+            icon: Icon(_showAll ? Icons.expand_less : Icons.expand_more, size: 18),
+            label: Text(_showAll ? 'Show fewer fields' : 'Add more details (optional)'),
+          ),
           const SizedBox(height: 6),
           SizedBox(
             width: double.infinity,

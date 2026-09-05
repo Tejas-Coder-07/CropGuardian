@@ -379,9 +379,15 @@ class _BidSheetState extends State<BidSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${st.bidCount} sealed bid${st.bidCount == 1 ? "" : "s"} so far',
-                style: const TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.bold)),
+            StreamBuilder<List<Bid>>(
+              stream: BidService.instance.allBids(widget.listingId),
+              builder: (context, s) {
+                final n = s.data?.length ?? 0;
+                return Text('\ sealed bid\ so far',
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold));
+              },
+            ),
             const SizedBox(height: 6),
             const Text(
               'Amounts stay hidden until bidding closes, so no buyer can be outbid at the last moment.',

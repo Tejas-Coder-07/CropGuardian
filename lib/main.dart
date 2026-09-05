@@ -1,6 +1,7 @@
 import 'package:crop_guardian/Authentication/login_screen.dart';
 import 'package:crop_guardian/Screens/diagnosis_screen/viewmodels/diagnosis_viewmodel.dart';
 import 'package:crop_guardian/core/user/role_controller.dart';
+import 'package:crop_guardian/core/ml/offline_classifier.dart';
 import 'package:crop_guardian/core/accessibility/accessibility_controller.dart';
 import 'package:crop_guardian/firebase_options.dart';
 import 'package:crop_guardian/splash_screen.dart';
@@ -33,6 +34,9 @@ void main() async{
     try { await RoleController.instance.load(); } catch (_) {}
     try { await AccessibilityController.instance.load(); } catch (_) {}
     try { AlertService.instance.init(); } catch (_) {}
+    // Warm the TFLite interpreter so the first scan is instant rather than
+    // paying model-load time in front of the farmer.
+    OfflineClassifier.instance.load().catchError((_) {});
     runApp(
         ChangeNotifierProvider(
           create: (_) => DiagnosisViewModel(
